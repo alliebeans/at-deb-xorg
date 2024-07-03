@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if ! [ $(id -u) = 0 ]; then
+	echo "Need root privileges to install @deb:xorg, exiting..." ;
+	exit 1 ;
+fi
+
+# Set installer variables
+basedir="$(dirname "$(readlink -f "$0")")"
+
+sudo cp -r $basedir/latest /home/$SUDO_USER/at-deb-xorg/
+sudo cp $basedir/README.md /home/$SUDO_USER/at-deb-xorg/
+sudo cp $basedir/OVERVIEW.md /home/$SUDO_USER/at-deb-xorg/
+sudo chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/at-deb-xorg/
+
+echo -e "\e[1;32m\n\nInstallation directory copied into home folder. Ready to install.\e[0m" ;
+
+exit 0
