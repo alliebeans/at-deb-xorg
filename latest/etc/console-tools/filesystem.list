@@ -1,0 +1,8 @@
+parted
+ncdu
+rsync
+dosfstools
+exfatprogs
+libblockdev-crypto2
+btrfs-progs
+gvfs-backends

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+hdmi_status=$(xrandr --current | xrandr --current | grep -oP -m 1 '(?<=HDMI1 )\w+')
+if [[ $hdmi_status == "connected" ]]; then
+	polybar --config=$HOME/.config/polybar/polybar.ini hdmi &
+fi

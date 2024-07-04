@@ -1,0 +1,67 @@
+#!/bin/bash
+
+install_console-tools(){
+    local name="console-tools"
+    check_conf_exists $name
+    lists $name
+
+    echo_ln ; echo_ok "$name installed"
+}
+
+install_power-management(){
+    local name="power-management"
+    check_conf_exists $name
+    lists $name
+    echo_ln
+
+    systemctl enable --now acpid
+    $ROOT_INSTALL $BASE_DIR/etc/$name/tlp.conf /etc/
+
+    echo_ln ; echo_ok "$name installed"
+}
+
+install_misc-base(){
+    local name="misc-base"
+    check_conf_exists $name
+    lists $name
+
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.gitconfig /home/$SUDO_USER/
+    $USR_INSTALL --mode=755 $BASE_DIR/etc/$name/.git_prompt.sh /home/$SUDO_USER/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.bashrc /home/$SUDO_USER/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.bash_aliases /home/$SUDO_USER/
+    timedatectl set-local-rtc 0
+    echo "Defaults pwfeedback" | tee /etc/sudoers.d/pwfeedback
+
+    echo_ln ; echo_ok "$name installed"
+}
+
+install_nmcli(){
+    local name="nmcli"
+    pkg network-manager-gnome
+
+    sleep 5
+
+    sed -i "s/managed=false/managed=true/" /etc/NetworkManager/NetworkManager.conf
+    sed -i "/wpa-ssid/d" /etc/network/interfaces
+    sed -i "/wpa-psk/d" /etc/network/interfaces
+
+    systemctl restart NetworkManager
+
+    systemctl daemon-reload
+
+    echo_ln ; echo_ok "NetworkManager, $name installed."
+}
+
+install_base(){
+    echo "Install base..."
+    set_snapper_apt_rule 0
+    echo_ln
+    apt_routine
+    echo_ln
+
+    install_console-tools
+    install_power-management
+    install_misc-base
+    install_nmcli ; echo
+    set_snapper_apt_rule 1
+}

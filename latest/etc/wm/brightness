@@ -1,0 +1,43 @@
+#!/bin/bash
+
+help="Usage: brightness [-i | --increase] [-d | --decrease]\n\nExiting..."
+
+if [ $# -eq 0 ]; then
+	echo -e $help;
+	exit 1;
+fi
+
+# Get current brightness level
+brightness=$(xbacklight -get)
+valid=1
+
+if [ "$1" == "-d" ] ||
+   [ "$1" = "--decrease" ]; then
+   	valid=0
+   	if [ "${brightness}" == "10.000000" ]; then
+		display_brightness=$(printf "%.0f" "$brightness")
+		notify-send "Brightness: ${display_brightness}%"
+	 	exit 0
+	else
+		xbacklight -dec 10
+		exit 0
+	fi
+fi
+
+if [ "$1" == "-i" ] ||
+   [ "$1" == "--increase" ]; then
+   	valid=0
+   	if [ "${brightness}" == "100.000000" ]; then
+		display_brightness=$(printf "%.0f" "$brightness")
+		notify-send "Brightness: ${display_brightness}%"
+	 	exit 0
+	else
+		xbacklight -inc 10
+		exit 0
+	fi
+fi
+
+if ! [ $valid -eq 0 ]; then
+	echo -e $help;
+	exit 1;
+fi

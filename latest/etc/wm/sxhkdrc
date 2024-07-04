@@ -1,0 +1,133 @@
+#! /bin/sh
+
+# APPLICATIONS
+
+super + t
+	mousepad
+
+super + e
+	nemo
+
+super + w
+	firefox-esr
+
+super + Return
+	xfce4-terminal
+
+# ROFI
+
+super + a
+	rofi -show &
+
+super + r
+	rofi -show drun &
+
+# SXHKD, BSPWM
+
+# Reload sxhkd .config
+super + Escape
+	pkill -USR1 -x sxhkd; notify-send 'sxhkd' 'Reloaded .config'
+
+# Restart, quit bspwm
+super + shift + ctrl + r
+	bspc wm -r; notify-send 'bspwm' 'Restarted'
+
+super + shift + ctrl + alt + q
+	bspc quit
+
+# Close and kill
+super + q
+	bspc node -c
+
+# Switch workspace
+super + shift + {Left, Right}
+	bspc desktop -f {prev, next} -a
+
+# Follow node to new workspace
+super + ctrl + shift + {Left, Right}
+	bspc node --to-desktop {prev, next} --follow
+
+# Expand a window by moving one of its side outward
+ctrl + alt + {Left,Down,Up,Right}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# Contract a window by moving one of its side inward
+alt + shift + {Left,Down,Up,Right}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# Change focus to node in given direction
+super + ctrl + {Left, Up, Down, Right}
+	bspc node -f {west, north, south, east}
+
+# Send the current node in given direction
+super + {Left, Up, Down, Right}
+	bspc node -n {west, north, south, east} --follow
+
+# Swap the current node and the node in given direction
+super + alt + {Left, Up, Down, Right}
+	bspc node -s {west, north, south, east} --follow
+
+# Flip tree from selected node on given axis
+super + {v,h}
+    bspc node @/ -F {horizontal, vertical}
+
+
+# Switch between tiled and monocle layout
+super + m
+	bspc desktop -l next
+
+# Switch to floating layout
+super + f
+	bspc node -t floating
+
+# Switch to default tiled layout
+super + d
+	bspc node -t tiled
+
+
+# SYSTEM
+
+super + shift + x
+	powermenu
+
+super + shift + w
+	wallpapers
+
+XF86MonBrightnessDown
+	brightness -d
+
+XF86MonBrightnessUp
+	brightness -i
+
+shift + F5
+	brightness -d
+
+shift + F6
+	brightness -i
+
+shift + F7
+	redshift -x
+
+shift + F8
+	redshift -O 4500
+
+shift + F10
+	pactl set-sink-mute 0 toggle
+
+shift + F11
+	pactl -- set-sink-volume 0 -5%
+
+shift + F12
+	pactl -- set-sink-volume 0 +5%
+
+Print
+	xfce4-screenshooter -f -m
+
+shift + Print
+	xfce4-screenshooter -r -m
+
+super + ctrl + shift + m
+	udisksctl mount --block-device /dev/sdb1 2>&1 | notify_usb_mount
+
+super + ctrl + shift + u
+	udisksctl unmount --block-device /dev/sdb1 2>&1 | notify_usb_mount

@@ -1,0 +1,15 @@
+[user]
+	email = albingromer@tutamail.com
+	name = Albin Ulemark Gromer
+[init]
+	defaultBranch = main
+[alias]
+	tree = log --graph --decorate --pretty=oneline --abbrev-commit
+	cm = commit -m
+	undo = reset --soft HEAD~1
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

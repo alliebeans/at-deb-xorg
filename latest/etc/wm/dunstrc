@@ -1,0 +1,65 @@
+[global]
+monitor = 0
+follow = none
+width = 280
+height = 240
+origin = top-right
+offset = 59x39
+scale = 0
+notification_limit = 5
+progress_bar false
+icon_corner_radius = 0
+indicate_hidden = no
+transparency = 42
+separator_height = 2
+padding = 8
+horizontal_padding = 8
+text_icon_padding = 32
+frame_width = 1
+frame_color = ""#333335"
+gap_size = 1
+separator_color = "#333335"
+sort = yes
+font = Clear Sans Regular 13
+idle_threshold = 0
+font = Clear Sans Regular 13
+line_height = 4
+markup = full
+format = "<b>%s</b>\n%b"
+alignment = left
+vertical_alignment = center
+show_age_threshold = -1
+ellipsize = middle
+ignore_newline = no
+stack_duplicates = true
+hide_duplicate_count = true
+enable_recursive_icon_lookup = true
+icon_theme = "Boston_cardboard, Adwaita"
+icon_position = left
+min_icon_size = 16
+max_icon_size = 16
+sticky_history = no
+history_length = 11
+dmenu = /usr/bin/dmenu
+browser = /usr/bin/firefox-esr
+always_run_script = false
+title = Notification
+class = Dunst
+corner_radius 6
+ignore_dbusclose = false
+
+[urgency_low]
+background = "#222223"
+foreground = "#f8f8f8"
+frame_color = "#222223"
+
+[urgency_normal]
+background = "#222223"
+foreground = "#f8f8f8"
+frame_color = "#222223"
+
+[urgency_critical]
+background = "#222223"
+foreground = "#ffff55"
+frame_color = "#ffff55"
+default_icon = /home/CUSTOMUSER/.icons/Boston_cardboard/legacy/16/dialog-warning.svg

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Rofi config file
+theme="/usr/local/lib/powermenu/powermenu.rasi"
+
+# Uptime
+uptime=$(uptime -p | sed -e 's/up //g')
+
+chosen=$(printf '%s\n' "" "" "" "" | rofi -dmenu -theme $theme -p "Uptime: $uptime")
+
+case "$chosen" in
+	) lockscreen ;;
+	) systemctl reboot ;;
+	) systemctl poweroff ;;
+	) systemctl suspend ;;
+esac

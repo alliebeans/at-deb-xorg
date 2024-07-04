@@ -1,0 +1,213 @@
+#!/bin/bash
+
+install_xorg-base(){
+    local name="xorg-base"
+    check_conf_exists $name
+    lists $name
+
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.Xmodmap /home/$SUDO_USER/
+    # xbacklight
+    # ----------
+    #   Notes:
+    #   Only Intel graphics drivers supported.
+    #   Tries to find the correct value as identifier for the main display: 'Screen 0'.
+    #   If this doesn't work, do the following:
+    #   Check output from 'xrandr --verbose' command and manually insert correct identifier value into 20-intel.conf.
+
+    local graphics=$(lspci | grep VGA | grep -oP 'Intel')
+
+    if [ $graphics = "Intel" ]; then
+        pkg xbacklight
+
+        local identifier=$(xrandr --verbose | grep -oP -m 1 '(?<=Identifier: )\w+')
+
+        sed -i "s/UNDEFINED/$identifier/g" $BASE_DIR/etc/$name/20-intel.conf
+
+        $ROOT_INSTALL -d /etc/X11/xorg.conf.d/
+        $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/20-intel.conf /etc/X11/xorg.conf.d/
+    fi
+
+    echo_ln ; echo_ok "$name installed."
+}
+
+install_wm(){
+    local name="wm"
+    check_conf_exists $name
+
+    deps $name
+
+    for dir in $(cat $BASE_DIR/etc/$name/root.dirs); do
+        $ROOT_INSTALL -d $dir
+    done
+
+    for dir in $(cat $BASE_DIR/etc/$name/usr.dirs); do
+        $USR_INSTALL -d /home/$SUDO_USER/$dir
+    done
+
+    lists $name
+
+    $USR_INSTALL --mode=744 $BASE_DIR/etc/$name/bspwmrc /home/$SUDO_USER/.config/bspwm/
+    $USR_INSTALL --mode=744 $BASE_DIR/etc/$name/sxhkdrc /home/$SUDO_USER/.config/sxhkd/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/config.rasi /home/$SUDO_USER/.config/rofi/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/picom.conf /home/$SUDO_USER/.config/picom/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/polybar.ini /home/$SUDO_USER/.config/polybar/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/dunstrc /home/$SUDO_USER/.config/dunst/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/terminalrc /home/$SUDO_USER/.config/xfce4/terminal/
+
+    # GVim only for +clipboard compilation
+    update-alternatives --remove vi /usr/bin/vim.gtk3
+    update-alternatives --remove vimdiff /usr/bin/vim.gtk3
+    update-alternatives --remove editor /usr/bin/vim.gtk3
+    update-alternatives --install /usr/bin/editor editor /usr/bin/vim.basic 1
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.vimrc /home/$SUDO_USER/
+
+    sed -i "s/CUSTOMUSER/$SUDO_USER/" $BASE_DIR/etc/$name/xfce4-screenshooter
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/xfce4-screenshooter /home/$SUDO_USER/.config/xfce4/
+
+    # Custom scripts
+    echo 'PATH="$PATH:/usr/local/libexec:/usr/local/sbin"' /etc/environment.d/99local-extra-paths.conf # Extra local dirs in global $PATH
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/hdmi_init /usr/local/libexec/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/polybar_init /usr/local/libexec/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/polybar_hdmi_init /usr/local/libexec/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/touchpad_init /usr/local/libexec/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/battery_poll /usr/local/libexec/
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/brightness /usr/local/bin/
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/powermenu /usr/local/bin/
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/notify_usb_mount /usr/local/bin
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/lockscreen /usr/local/bin
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/powermenu.rasi /usr/local/lib/powermenu/
+
+    # Theming: GRUB
+    sed -i "s/^#GRUB_TERMINAL=console/GRUB_TERMINAL=console/" /etc/default/grub
+    echo -e "[Daemon]\nTheme=text\nShowDelay=0" | tee /etc/plymouth/plymouthd.conf
+
+    # Theming: at-deb-theme
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/fonts/fonts.conf /home/$SUDO_USER/.config/fontconfig/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/apps/Mousepad/at-deb.xml /home/$SUDO_USER/.local/share/gtksourceview-4/styles/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/apps/xfce4-terminal/at-deb.theme /home/$SUDO_USER/.local/share/xfce4/terminal/colorschemes/
+    7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-dark.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-base/
+    7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-light.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-base/
+    7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-lightdm/at-deb-dark-lightdm-greeter.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-lightdm/
+    7z x $BASE_DIR/etc/$name/at-deb-theme/icons/Boston_cardboard.7z -o$BASE_DIR/etc/$name/at-deb-theme/icons/
+    rm -rf $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-dark.7z
+    rm -rf $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-light.7z
+    rm -rf $BASE_DIR/etc/$name/at-deb-theme/gtk-lightdm/at-deb-dark-lightdm-greeter.7z
+    rm -rf $BASE_DIR/etc/$name/at-deb-theme/icons/Boston_cardboard.7z
+    cp -r $BASE_DIR/etc/$name/at-deb-theme/ /usr/local/share/themes
+    ln -s /usr/local/share/themes/at-deb-theme/gtk-base/at-deb-dark/ /usr/share/themes/
+    ln -s /usr/local/share/themes/at-deb-theme/gtk-base/at-deb-light/ /usr/share/themes/
+    ln -s /usr/local/share/themes/at-deb-theme/gtk-lightdm/at-deb-dark-lightdm-greeter/ /usr/share/themes/
+    ln -s /usr/local/share/themes/at-deb-theme/icons/Boston_cardboard /usr/share/icons
+    sed -i "/#greeter-hide-users=/c\greeter-hide-users=false" /etc/lightdm/lightdm.conf
+    sed -i "/#greeter-allow-guest=/c\greeter-allow-guest=false" /etc/lightdm/lightdm.conf
+    sed -i "/#allow-guest=/c\allow-guest=false" /etc/lightdm/lightdm.conf
+    sed -i "/#background=/c\background=/usr/local/share/themes/at-deb-theme/wallpapers/default/login/1920x1080.png" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#user-background=/c\user-background=true" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#theme-name=/c\theme-name=at-deb-dark-lightdm-greeter" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#icon-theme-name=/c\icon-theme-name=Boston_cardboard" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#font-name=/c\font-name=Clear Sans Medium" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#indicators=/c\indicators=~power;~spacer;~clock" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#clock-format=/c\clock-format=%H:%M:%S" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#position=/c\position=42% 56%" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#screensaver-timeout=/c\screensaver-timeout=70" /etc/lightdm/lightdm-gtk-greeter.conf
+    echo "hide-user-image=true" | tee -a /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "s/CUSTOMUSER/$SUDO_USER/" $BASE_DIR/etc/$name/at-deb-theme/qt5-base/qt5ct.conf
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/qt5-base/qt5ct.conf /home/$SUDO_USER/.config/qt5ct/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/qt5-base/at-deb-dark.conf /home/$SUDO_USER/.config/qt5ct/colors/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/qt5-base/at-deb-dark-fixes.qss /home/$SUDO_USER/.config/qt5ct/qss/
+
+    # Theming: wallpapers -- set default wallpaper
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/wallpapers /usr/local/bin/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/wallpapers.rasi /usr/local/lib/wallpapers/
+    echo "default" | tee -a /var/local/wallpapers/current-wallpaper
+
+    # Theming: GTK settings
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/gtkfilechooser.ini /home/$SUDO_USER/.config/gtk-2.0/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/settings.ini /home/$SUDO_USER/.config/gtk-3.0/
+
+    # Theming: dconf settings
+
+    # /org/gtk/settings/
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/date-format "'regular'"
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/location-mode "'path-bar'"
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/show-hidden true
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/show-size-column true
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/sidebar-width 202
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/sort-directories-first true
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/type-format "'mime'"
+
+    # /org/gnome/desktop/interface
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/font-name "'Clear Sans 11'"
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/gtk-theme "'at-deb-dark'"
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/icon-theme "'Boston_cardboard'"
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/monospace-font-name "'JetBrains Mono 11'"
+
+    # /org/nemo/
+    sudo -u $SUDO_USER dconf write /org/nemo/icon-view/default-zoom-level "'small'"
+    sudo -u $SUDO_USER dconf write /org/nemo/icon-view/labels-beside-icons false
+    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-column-order ['name', 'size', 'type', 'detailed_type', 'date_modified', 'date_created_with_time', 'date_accessed', 'date_created', 'group', 'where', 'mime_type', 'date_modified_with_time', 'octal_permissions', 'owner', 'permissions', 'selinux_context']
+    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-visible-columns ['name', 'size', 'detailed_type', 'date_modified', 'date_created_with_time', 'octal_permissions']
+    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-actions ['set-resolution.nemo_action', 'mount-archive.nemo_action', 'add-desklets.nemo_action', 'change-background.nemo_action', 'set-as-background.nemo_action']
+    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-extensions ['NemoFileRoller']
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/default-sort-order "'type'"
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/detect-content false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/executable-text-activation "'display'"
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-advanced-permissions true
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-bookmarks-in-to-menus false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-compact-view-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-edit-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-hidden-files true
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-location-entry true
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-next-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-places-in-to-menus false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-search-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/sort-favorites-first false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/sidebar-bookmark-breakpoint 0
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/sidebar-width 173
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/side-pane-view "'tree'"
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-sidebar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-toolbar true
+
+    # /org/xfce/mousepad/
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/auto-indent true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/color-scheme "'at-deb'"
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/font-name "'JetBrains Mono 11'"
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/highlight-current-line false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/match-braces true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-endings false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-numbers true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-whitespace true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/word-wrap true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/menubar-visible false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/opening-mode "'window'"
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/path-in-title false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-size false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-state false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/statusbar-visible true
+
+    echo_ok "$name installed."
+}
+
+install_misc-apps(){
+    local name="misc-apps"
+    check_conf_exists $name
+    lists $name
+
+    $BASE_DIR/etc/$name/customise-firefox-esr.sh ; echo
+
+    echo_ok "$name installed."
+}
+
+
+install_xorg(){
+    echo "Install xorg..."
+    set_snapper_apt_rule 0
+    echo_ln
+    apt_routine
+    echo_ln
+
+    install_xorg-base
+    install_wm
+    install_misc-apps ; echo
+    set_snapper_apt_rule 1
+}

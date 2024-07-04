@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Install
+# Usage: -d for directory, --mode=644 etc for files
+USR_INSTALL="install -v -o $SUDO_USER -g $SUDO_USER"
+ROOT_INSTALL="install -v -o root -g root"
+
+export USR_INSTALL
+export ROOT_INSTALL
+
+# Echo
+echo_ok(){
+    local msg="$1"
+    echo -e "\e[1;32m$msg\e[0m"
+}
+
+echo_warn(){
+    local msg="$1"
+    echo -e "\e[1;33m$msg\e[0m"
+}
+
+echo_fail(){
+    local msg="$1"
+    echo -e "\e[1;31m$msg\e[0m"
+}
+
+echo_inf(){
+    local msg="$1"
+    echo -e "\e[1;36m$msg\e[0m"
+}
+
+echo_ln(){
+    echo -e "\n"
+}
+
+# Apt
+apt_routine(){
+    apt update
+    apt full-upgrade -yy
+    apt autoremove -yy
+}
+
+pkg(){
+    local pkg="$1"
+    apt install -yy $pkg
+}
+
+pkgs(){
+  local list="$1"
+  for pkg in $(cat $list); do
+    apt install -yy $pkg
+  done
+}
+
+lists(){
+    local name="$1"
+    for list in $(ls -f $BASE_DIR/etc/$name/ | grep '.list'); do
+        pkgs $BASE_DIR/etc/$name/$list
+    done
+}
+
+set_snapper_apt_rule(){
+    local toggle="$1"
+    if [ -f /etc/apt/apt.conf.d/80snapper ] && [ $1 -eq 0 ]; then
+        mv /etc/apt/apt.conf.d/80snapper /etc/apt/apt.conf.d/80snapper.bak
+    elif [ -f /etc/apt/.conf.d/80snapper.bak ] && [ $1 -eq 1 ]; then
+        mv /etc/apt/apt.conf.d/80snapper.bak /etc/apt/apt.conf.d/80snapper
+    fi
+}
+
+deps(){
+    local name="$1"
+    local dep="$BASE_DIR/etc/$name/"$name".deps"
+    pkgs $dep
+}
+
+# Helper
+check_conf_exists(){
+    local name="$1"
+    if ! [ -d $BASE_DIR/etc/$name ]; then
+        error 4 $name
+    fi
+}

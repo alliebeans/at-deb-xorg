@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Usage: udisksctl mount --block-device /dev/sdb1 2>&1 | *this script*
+
+read msg;
+notify-send "USB mass storage" "$msg" "$@"

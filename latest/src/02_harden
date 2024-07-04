@@ -1,0 +1,170 @@
+#!/bin/bash
+
+install_tpm2-luks-decryption(){
+    local name="tpm2-luks-decryption"
+    # Setup TPM LUKS decryption
+    # https://blog.fernvenue.com/archives/debian-with-luks-and-tpm-auto-decryption/
+    tpm2=1
+
+    if [ "$(ls /sys/class/tpm/ | grep -c tpm)" -gt 0 ]; then
+        tpm2=0
+    fi
+
+    if [ $tpm2 -eq 0 ]; then
+        # Setup TPM 2.0
+        pkg tpm2-tools
+
+        local luks_dev="$(lsblk -ln -o NAME,FSTYPE | grep crypto_LUKS | awk '{print $1}')";
+
+        if [ ${#luks_dev} -eq 0 ]; then
+            error 3 $name
+        else
+            echo_warn "You will soon be asked to provide current decryption key for block device:"
+            echo "$luks_dev"
+            echo_ln
+            sleep 3;
+        fi
+
+        systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7 /dev/$luks_dev;
+
+        pkg dracut;
+
+        echo 'add_dracutmodules+=" tpm2-tss crypt "' | tee "/etc/dracut.conf.d/99-tpm-decrypt.conf";
+        sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="rd.auto rd.luks=1"/' /etc/default/grub;
+        sed -i 's/^/#&/' /etc/crypttab;
+
+        dracut -f;
+        update-grub;
+
+        echo_ln ; echo_ok "TPM2 LUKS decryption installed."
+    else
+        echo_warn "No TPM2 module detected, skipping..."
+    fi
+}
+
+harden_kernel(){
+    local name="harden-kernel"
+    check_conf_exists $name
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/99-harden-kernel.conf /etc/sysctl.d/
+
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/10-network-protocols-blacklist.conf /etc/modprobe.d/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/20-filesystems-blacklist.conf /etc/modprobe.d/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/30-network-filesystems-blacklist.conf /etc/modprobe.d/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/40-vivid-blacklist.conf /etc/modprobe.d/
+
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/vulnerability-mitigations.cfg /etc/grub.d/50_vulnerability-mitigations.cfg
+
+    service procps force-reload
+
+    echo_ln ; echo_ok "$name installed."
+}
+
+harden_network(){
+    local name="harden-network"
+    check_conf_exists $name
+    lists $name
+
+    # firewalld
+    firewall-cmd --set-default-zone=drop
+    systemctl unmask --now firewalld
+    systemctl enable --now firewalld
+
+    # fail2ban
+    # Change default fail2ban configuration from iptables to firewalld
+    cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+    sed -i "s/banaction = iptables/banaction = firewallcmd-rich-rules[actiontype=]/g" /etc/fail2ban/jail.local
+    sed -i "s/banaction_allports = iptables-allports/firewallcmd-rich-rules[actiontype=]/g" /etc/fail2ban/jail.local
+    mv /etc/fail2ban/jail.d/defaults-debian.conf /etc/fail2ban/jail.d/defaults-debian.conf.bak
+    systemctl restart fail2ban
+    systemctl enable fail2ban --now
+
+    # macchanger
+    sed -i "s/ENABLE_ON_POST_UP_DOWN=false/ENABLE_ON_POST_UP_DOWN=true/" /etc/default/macchanger
+
+    # scurl
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/scurl /usr/local/bin/scurl
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/scurl-download /usr/local/bin/scurl-download
+
+    # Need to SSH into this machine? -- uncomment this
+    # pkg knockd
+
+    echo_ln ; echo_ok "$name installed."
+}
+
+harden_desktop(){
+    local name="harden-desktop"
+    check_conf_exists $name
+    lists $name
+
+    # Disable core dumps
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/10-disable-core-dump.conf /etc/security/limits.d/
+    echo "ulimit -S -c 0 > /dev/null 2>&1" | tee -a /etc/profile.d/disable-core-dump.sh
+    $ROOT_INSTALL -d /etc/systemd/coredump.conf.d/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/disable-core-dump.conf /etc/systemd/coredump.conf.d/
+
+    # Harden logindefs
+    echo "SHA_CRYPT_MIN_ROUNDS 100000" | tee -a /etc/login.defs
+    sed -i "s/^UMASK/#UMASK/" /etc/login.defs
+    echo "UMASK 027" | tee -a /etc/login.defs
+
+    # Apt
+    sed -i "s/http:/https:/" /etc/apt/sources.list
+
+    # Hardening file permissions
+    chmod 750 /home/$SUDO_USER
+    chmod 600 /etc/crontab
+    chmod 700 /etc/cron.monthly/
+    chmod 700 /etc/cron.weekly/
+    chmod 700 /etc/cron.daily/
+    chmod 700 /etc/cron.hourly/
+    chmod 700 /etc/cron.d/
+    chmod 750 /etc/sudoers.d/
+
+    # Setup issue
+    echo "===  @deb:xorg "${VERSION:-""}" - \l   ===
+
+  Remember: you are accessing a private information system that is provided for authorized use only.
+
+  From jest -- to earnest
+" |  tee /etc/issue
+    echo "===  @deb:xorg "${VERSION:-""}" - \l   ===
+
+  Remember: you are accessing a private information system that is provided for authorized use only.
+
+  From jest -- to earnest
+" | tee /etc/issue.net
+
+    # Purge -- TODO
+    apt purge inetutils-telnet -yy
+    apt_routine
+
+    if ! [ "$(mokutil --sb-state | grep -c enabled)" -ge 0 ]; then
+	    echo_warn "Warning: UEFI SecureBoot is not enabled."
+    fi
+
+    echo_ln ; echo_ok "$name installed."
+}
+
+harden_apparmor(){
+    local name="harden-apparmor"
+    check_conf_exists $name
+    lists $name
+
+    # apparmor.d -- TODO
+    echo_ln ; echo_ok "$name installed."
+}
+
+harden(){
+    echo "Harden base installation..."
+    set_snapper_apt_rule 0
+    echo_ln
+    apt_routine
+    echo_ln
+
+    install_tpm2-luks-decryption
+    harden_kernel
+    harden_network
+    harden_desktop
+    harden_apparmor ; echo
+    set_snapper_apt_rule 1
+}

@@ -1,0 +1,99 @@
+configuration {
+	show-icons: false;
+	icon-theme: "Boston_cardboard";
+	display-drun: "";
+	drun-display-format: "{name}";
+	disable-history: true;
+	sidebar-mode: false;
+}
+
+* {
+    bg: #00008080;
+    fg: #f8f8f8;
+    bg-alt: #f2f2f215;
+    bg-selected: #474747;
+    fg-selected: #55ffff;
+    fg-dimmed: #f8f8f850;
+    hidden: #00000000;
+}
+
+window {
+    fullscreen: true;
+    width: 100%;
+    height: 100%;
+    transparency: "real";
+    background-color: @bg;
+    text-color: @fg;
+    border: 0;
+    font: "Clear Sans 24";
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+
+    background-color: @hidden;
+    border: 0;
+    spacing: 5%;
+    padding: 34% 12.5% 10% 12.5%;
+}
+
+    inputbar {
+        children: [ prompt ];
+        
+        background-color: @hidden;
+        text-color: @fg;
+        expand: false;
+        border: 0;
+        margin: 0% 24% 0% 26%;
+        padding: 0% 0% 0% 0%;
+    }
+        prompt {
+            enabled: true;
+            background-color: @hidden;
+            text-color: @fg;
+            font: "Clear Sans Medium 20";
+            margin: 0% 0% 0% 7%;
+        }
+
+    listview {
+        background-color: @hidden;
+        border: 0;
+        spacing: 1%;
+	padding: 0% 24% 0% 24%;
+	margin: 0% 3% 0% 3%;
+        columns: 1;
+        lines: 3;
+        fixed-columns: true;
+        fixed-height: true;
+        cycle: true;
+        dynamic: false;
+        scrollbar: false;
+        layout: vertical;
+    }
+        element normal.normal {
+            background-color: @hidden;
+            orientation: vertical;
+            border: 0;
+            border-radius: 8px;
+        }
+        element alternate.normal {
+            background-color: @hidden;
+        }
+        element selected.normal {
+            background-color: @bg-alt;
+            border-radius: 8px;
+        }
+        element-text {
+            expand: true;
+            horizontal-align: 0.5;
+            vertical-align: 0.5;
+            margin: 0% 0.5% 0% 0.5%;
+            font: "Clear Sans 36";
+            text-color: @fg;
+            background-color: @hidden;
+            padding: 0% 3% 0% 3%;
+            border-radius: 6px;
+        }
+	element-text selected.normal {
+            text-color:  @fg-selected;
+	}

@@ -1,0 +1,13 @@
+xorg
+xorg-dev
+x11-xfs-utils
+x11-xserver-utils
+xinput
+numlockx
+pulseaudio
+alsa-utils
+pavucontrol
+volumeicon-alsa
+polkitd
+pkexec
+policykit-1-gnome

@@ -1,0 +1,135 @@
+#!/bin/bash
+
+install_zramswap(){
+    local name="zramswap"
+
+    pkg zram-tools
+    sed -i '/#PERCENT/c\PERCENT=50' /etc/default/zramswap
+    systemctl restart zramswap.service
+
+    if [ "$(free -h | grep -c Swap)" -gt 0 ]; then
+        echo_ln ; echo_ok "Swap partition installed."
+    else
+        error 3 $name
+    fi
+}
+
+install_snapper(){
+    local name="snapper"
+    check_conf_exists $name
+    deps $name
+
+    pkg snapper
+
+    cd /
+    umount .snapshots/
+    rm -r .snapshots/
+
+    snapper -c root create-config /
+    snapper -c home create-config /home
+
+    sed -i 's/ALLOW_GROUPS/c\ALLOW_GROUPS="sudo"/' /etc/snapper/configs/root
+    sed -i 's/SYNC_ACL/c\SYNC_ACL="yes"/' /etc/snapper/configs/root
+    sed -i 's/TIMELINE_CREATE/c\TIMELINE_CREATE="no"/' /etc/snapper/configs/root
+    sed -i 's/TIMELINE_LIMIT_HOURLY/c\TIMELINE_LIMIT_HOURLY="1"/' /etc/snapper/configs/root
+    sed -i 's/TIMELINE_LIMIT_DAILY/c\TIMELINE_LIMIT_=DAILY"1"/' /etc/snapper/configs/root
+    sed -i 's/TIMELINE_LIMIT_WEEKLY/c\TIMELINE_LIMIT_WEEKLY="5"/' /etc/snapper/configs/root
+    sed -i 's/TIMELINE_LIMIT_MONTHLY/c\TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/root
+    sed -i 's/TIMELINE_LIMIT_QUARTERLY/c\TIMELINE_LIMIT_QUARTERLY="0"/' /etc/snapper/configs/root
+    sed -i 's/TIMELINE_LIMIT_YEARLY/c\TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/root
+
+    sed -i 's/ALLOW_GROUPS/c\ALLOW_GROUPS="sudo"/' /etc/snapper/configs/home
+    sed -i 's/SYNC_ACL/c\SYNC_ACL="yes"/' /etc/snapper/configs/home
+    sed -i 's/TIMELINE_CREATE/c\TIMELINE_CREATE="no"/' /etc/snapper/configs/home
+    sed -i 's/TIMELINE_LIMIT_HOURLY/c\TIMELINE_LIMIT_HOURLY="1"/' /etc/snapper/configs/home
+    sed -i 's/TIMELINE_LIMIT_DAILY/c\TIMELINE_LIMIT_=DAILY"1"/' /etc/snapper/configs/home
+    sed -i 's/TIMELINE_LIMIT_WEEKLY/c\TIMELINE_LIMIT_WEEKLY="5"/' /etc/snapper/configs/home
+    sed -i 's/TIMELINE_LIMIT_MONTHLY/c\TIMELINE_LIMIT_MONTHLY="0"/' /etc/snapper/configs/home
+    sed -i 's/TIMELINE_LIMIT_QUARTERLY/c\TIMELINE_LIMIT_QUARTERLY="0"/' /etc/snapper/configs/home
+    sed -i 's/TIMELINE_LIMIT_YEARLY/c\TIMELINE_LIMIT_YEARLY="0"/' /etc/snapper/configs/home
+
+    btrfs su del /.snapshots
+    mkdir /.snapshots
+    mount -av
+
+    systemctl disable --now snapper-boot.timer
+
+    if [ "$(btrfs su list / | grep -c @snapshots)" -gt 0 ]; then
+        echo_ln ; echo_ok "$name installed"
+    else
+        error 3 $name
+    fi
+}
+
+install_grub-btrfs(){
+    local name="grub-btrfs"
+    check_conf_exists $name
+    deps $name
+
+    cd /home/$SUDO_USER
+    git clone https://github.com/Antynea/grub-btrfs.git
+    cd grub-btrfs/
+    make install
+
+    update-grub
+
+    systemctl enable --now grub-btrfsd
+
+    systemctl daemon-reload
+
+    update-grub
+
+    cd /home/$SUDO_USER
+    rm -rf grub-btrfs/
+
+    echo_ln ; echo_ok "$name installed"
+}
+
+install_rollback-system(){
+    local name="rollback-system"
+    check_conf_exists $name
+    local dest="/usr/local/sbin"
+    ! [ -d $dest ] && $ROOT_INSTALL -d $dest
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/rollback-system.0.sh $dest
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/rollback-system.1.sh $dest
+
+    echo_ln ; echo_ok "$name installed"
+}
+
+setup_default_snapshot(){
+    # Setup 'default root' snapshot
+    snapper create --read-write -d "default root"
+    rootid="$(btrfs inspect-internal rootid /.snapshots/1/snapshot)"
+    btrfs su set-def $rootid /
+
+    sed -i "s/,subvol=@ / /" /etc/fstab
+
+    echo_ln ; echo_ok "'default root' snapshot setup done."
+}
+
+install_filesystem(){
+    echo "Install filesystem..."
+    echo_ln
+    # Check subvolume layout
+    local subvol_ok=1
+
+    if [ -d "/.snapshots" ]; then
+        subvol_ok=0;
+    fi
+
+    if ! [ $subvol_ok -eq 0 ]; then
+        error 5
+    fi
+
+    apt_routine
+    pkg grep
+    echo_ln
+
+    install_zramswap
+    install_snapper
+    set_snapper_apt_rule 0
+    install_grub-btrfs
+    install_rollback-system
+    setup_default_snapshot ; echo
+    set_snapper_apt_rule 1
+}
