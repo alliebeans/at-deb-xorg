@@ -77,11 +77,33 @@ if ! pgrep -x battery_poll > /dev/null; then
 	bash /usr/local/libexec/battery_poll &
 fi
 
+# Lockscreen
+if ! pgrep -x xss-lock > /dev/null; then
+	xss-lock -- /usr/local/bin/lockscreen &
+fi
+
 # Compositor
-picom --daemon &
+if ! pgrep -x picom > /dev/null; then
+	picom --daemon &
+fi
+
+# Restart daemons
+# ---------------
+# Needed for /usr/local/bin/themes functionality
 
 # Notification daemon
-dunst &
+if ! pgrep -x dunst > /dev/null; then
+	dunst &
+elif pgrep -x dunst > /dev/null; then
+	[ kill -15 "$(pidof dunst)" ] && dunst &
+fi
+
+# xsettings daemon
+if ! pgrep -x xsettingsd > /dev/null; then
+	xsettingsd &
+elif pgrep -x xsettingsd > /dev/null; then
+	[ kill -15 "$(pidof xsettingsd)" ] && xsettingsd &
+fi
 
 # Wallpaper
 while read line; do
@@ -97,11 +119,6 @@ export POLYBAR_WLP
 # Polybar
 bash /usr/local/libexec/polybar_init &
 bash /usr/local/libexec/polybar_hdmi_init &
-
-# Lockscreen
-if ! pgrep -x xss-lock > /dev/null; then
-	xss-lock -- /usr/local/bin/lockscreen &
-fi
 
 # xfce4-clipman
 if ! pgrep -x xfce4-clipman > /dev/null; then
