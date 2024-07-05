@@ -180,7 +180,7 @@ install_wm(){
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/match-braces true
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-endings false
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-numbers true
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-whitespace true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-whitespace false
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/word-wrap true
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/menubar-visible false
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/opening-mode "'window'"
