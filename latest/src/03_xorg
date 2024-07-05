@@ -84,7 +84,7 @@ install_wm(){
 
     # Theming: at-deb-theme
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/fonts/fonts.conf /home/$SUDO_USER/.config/fontconfig/
-    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/apps/Mousepad/at-deb.xml /home/$SUDO_USER/.local/share/gtksourceview-4/styles/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/apps/Mousepad/at-deb-dark.xml /home/$SUDO_USER/.local/share/gtksourceview-4/styles/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/apps/xfce4-terminal/at-deb.theme /home/$SUDO_USER/.local/share/xfce4/terminal/colorschemes/
     7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-dark.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-base/
     7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-light.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-base/
@@ -174,7 +174,7 @@ install_wm(){
 
     # /org/xfce/mousepad/
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/auto-indent true
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/color-scheme "'at-deb'"
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/color-scheme "'at-deb-dark'"
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/font-name "'JetBrains Mono 11'"
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/highlight-current-line false
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/match-braces true

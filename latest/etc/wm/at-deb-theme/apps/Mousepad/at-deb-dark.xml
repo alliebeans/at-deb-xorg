@@ -23,7 +23,7 @@
  This theme is a modified version of cobalt.xml style based on cobalt.xml from pastie.caboo.se
 -->
 
-<style-scheme id="at-deb" _name="at-deb" version="1.0">
+<style-scheme id="at-deb-dark" _name="at-deb-dark" version="1.0">
   <author>Albin Ulemark Gromer</author>
   <_description>Gray with cyan accent color scheme</_description>
 
