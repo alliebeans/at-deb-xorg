@@ -71,6 +71,7 @@ install_wm(){
     $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/polybar_hdmi_init /usr/local/libexec/
     $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/touchpad_init /usr/local/libexec/
     $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/battery_poll /usr/local/libexec/
+    $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/switch_monitor_workspace /usr/local/libexec/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/brightness /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/powermenu /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/notify_usb_mount /usr/local/bin
@@ -115,6 +116,9 @@ install_wm(){
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/qt5-base/qt5ct.conf /home/$SUDO_USER/.config/qt5ct/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/qt5-base/at-deb-dark.conf /home/$SUDO_USER/.config/qt5ct/colors/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/at-deb-theme/qt5-base/at-deb-dark-fixes.qss /home/$SUDO_USER/.config/qt5ct/qss/
+
+    # Theming: themes -- switch between light/dark themes
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/themes /usr/local/bin/
 
     # Theming: wallpapers -- set default wallpaper
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/wallpapers /usr/local/bin/

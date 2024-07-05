@@ -43,6 +43,13 @@ super + q
 super + shift + {Left, Right}
 	bspc desktop -f {prev, next} -a
 
+# Switch to workspace on other monitor
+super + shift + Up
+	switch_monitor_workspace 0
+
+super + shift + Down
+	switch_monitor_workspace 1
+
 # Follow node to new workspace
 super + ctrl + shift + {Left, Right}
 	bspc node --to-desktop {prev, next} --follow
@@ -92,6 +99,9 @@ super + shift + x
 
 super + shift + w
 	wallpapers
+
+super + shift + t
+	themes
 
 XF86MonBrightnessDown
 	brightness -d

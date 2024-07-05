@@ -1,0 +1,14 @@
+#!/bin/bash
+
+CURRENT_WORKSPACE="$(bspc query -D -d focused --names)"
+if [ $CURRENT_WORKSPACE -le 6 ] && [ $1 -eq 0 ]; then
+	NEXT_WORKSPACE=$(( $CURRENT_WORKSPACE + 7 ))
+elif [ $CURRENT_WORKSPACE -gt 6 ] && [ $1 -eq 1 ]; then
+	NEXT_WORKSPACE=$(( $CURRENT_WORKSPACE - 7 ))
+else
+	exit 1
+fi
+
+bspc desktop -f $NEXT_WORKSPACE -a
+
+exit 0

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+CURRENT_WORKSPACE="$(bspc query -D -d focused)"
+CURRENT_WINDOW="$(bspc query -N -n focused.window)"
+
+set_light(){
+	sed -i '/Net\/ThemeName/c\Net\/ThemeName "cloudy-alliebeans-light"' /home/$USER/.xsettingsd
+	sed -i "s/#f8f8f8/#070707/" /home/$USER/.config/dunst/dunstrc
+	sed -i "s/#222223/#dddddc/" /home/$USER/.config/dunst/dunstrc
+	sed -i "s/#333335/#ccccc5/" /home/$USER/.config/dunst/dunstrc
+	sed -i "/BackgroundDarkness=/c\BackgroundDarkness=0.200000" /home/$USER/.config/xfce4/terminal/terminalrc
+	bspc wm -r
+	sleep 1
+	bspc desktop -f $CURRENT_WORKSPACE -a
+	xdo activate $CURRENT_WINDOW
+	notify-send "themes" "Light theme was set."
+}
+
+set_dark(){
+	sed -i '/Net\/ThemeName/c\Net\/ThemeName "cloudy-alliebeans-dark"' /home/$USER/.xsettingsd
+	sed -i "s/#070707/#f8f8f8/" /home/$USER/.config/dunst/dunstrc
+	sed -i "s/#dddddc/#222223/" /home/$USER/.config/dunst/dunstrc
+	sed -i "s/#ccccc5/#333335/" /home/$USER/.config/dunst/dunstrc
+	sed -i "/BackgroundDarkness=/c\BackgroundDarkness=0.600000" /home/$USER/.config/xfce4/terminal/terminalrc
+	bspc wm -r
+	sleep 1
+	bspc desktop -f $CURRENT_WORKSPACE -a
+	xdo activate $CURRENT_WINDOW
+	notify-send "themes" "Dark theme was set."
+}
+
+if [ "$(cat /home/$USER/.xsettingsd | grep -oP '(?<=Net/ThemeName "cloudy-alliebeans-)\w+')" = "dark" ]; then
+	set_light
+elif [ "$(cat /home/$USER/.xsettingsd | grep -oP '(?<=Net/ThemeName "cloudy-alliebeans-)\w+')" = "light" ]; then
+	set_dark
+fi
+
+exit 0

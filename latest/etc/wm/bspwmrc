@@ -13,7 +13,7 @@ bash hdmi_init &
 
 # bspwm Settings
 bspc monitor eDP1 -d 0 1 2 3 4 5 6
-bspc monitor HDMI1 -d 7 8 9 10 11
+bspc monitor HDMI1 -d 7 8 9 10 11 12 13
 
 bspc config border_width				0
 bspc config border_radius				6
@@ -31,6 +31,7 @@ bspc config borderless_monocle			true
 bspc config single_monocle				false
 bspc config gapless_monocle				true
 bspc config focus_follows_pointer		true
+bspc config pointer_follows_focus       true
 bspc config remove_disabled_monitors	true
 bspc config merge_overlapping_monitors	true
 bspc config pointer_action1				move
@@ -102,7 +103,7 @@ fi
 if ! pgrep -x xsettingsd > /dev/null; then
 	xsettingsd &
 elif pgrep -x xsettingsd > /dev/null; then
-	[ kill -15 "$(pidof xsettingsd)" ] && xsettingsd &
+	kill -15 "$(pidof xsettingsd)" && xsettingsd &
 fi
 
 # Wallpaper
