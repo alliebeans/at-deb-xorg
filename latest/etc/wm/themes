@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CURRENT_WORKSPACE="$(bspc query -D -d focused)"
+CURRENT_WORKSPACE="$(bspc query -D -d focused --names)"
 CURRENT_WINDOW="$(bspc query -N -n focused.window)"
 
 set_light(){
