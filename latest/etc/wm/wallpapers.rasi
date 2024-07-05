@@ -34,12 +34,12 @@ mainbox {
     background-color: @hidden;
     border: 0;
     spacing: 5%;
-    padding: 34% 12.5% 10% 12.5%;
+    padding: 30% 12.5% 10% 12.5%;
 }
 
     inputbar {
         children: [ prompt ];
-        
+
         background-color: @hidden;
         text-color: @fg;
         expand: false;
@@ -62,7 +62,7 @@ mainbox {
 	padding: 0% 24% 0% 24%;
 	margin: 0% 3% 0% 3%;
         columns: 1;
-        lines: 3;
+        lines: 4;
         fixed-columns: true;
         fixed-height: true;
         cycle: true;

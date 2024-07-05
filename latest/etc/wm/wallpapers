@@ -9,7 +9,7 @@ done < /var/local/wallpapers/current-wallpaper
 rofi_theme="/usr/local/lib/wallpapers/wallpapers.rasi"
 
 # Get new wallpaper selection
-next=$(printf '%s\n' "default" "darker" "colorful" | rofi -dmenu -theme $rofi_theme -p "Set wallpaper:")
+next=$(printf '%s\n' "default" "darker" "lines" "colorful"  | rofi -dmenu -theme $rofi_theme -p "Set wallpaper:")
 
 # Set new selected value
 echo $next > /var/local/wallpapers/current-wallpaper
