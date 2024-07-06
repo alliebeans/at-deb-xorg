@@ -4,7 +4,7 @@ CURRENT_WORKSPACE="$(bspc query -D -d focused --names)"
 CURRENT_WINDOW="$(bspc query -N -n focused.window)"
 
 set_light(){
-	sed -i '/Net\/ThemeName/c\Net\/ThemeName "cloudy-alliebeans-light"' /home/$USER/.xsettingsd
+	sed -i '/Net\/ThemeName/c\Net\/ThemeName "at-deb-light"' /home/$USER/.xsettingsd
 	sed -i "s/#f8f8f8/#070707/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#222223/#dddddc/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#333335/#ccccc5/" /home/$USER/.config/dunst/dunstrc
@@ -17,7 +17,7 @@ set_light(){
 }
 
 set_dark(){
-	sed -i '/Net\/ThemeName/c\Net\/ThemeName "cloudy-alliebeans-dark"' /home/$USER/.xsettingsd
+	sed -i '/Net\/ThemeName/c\Net\/ThemeName "at-deb-dark"' /home/$USER/.xsettingsd
 	sed -i "s/#070707/#f8f8f8/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#dddddc/#222223/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#ccccc5/#333335/" /home/$USER/.config/dunst/dunstrc
@@ -29,9 +29,9 @@ set_dark(){
 	notify-send "themes" "Dark theme was set."
 }
 
-if [ "$(cat /home/$USER/.xsettingsd | grep -oP '(?<=Net/ThemeName "cloudy-alliebeans-)\w+')" = "dark" ]; then
+if [ "$(cat /home/$USER/.xsettingsd | grep -oP '(?<=Net/ThemeName "at-deb-)\w+')" = "dark" ]; then
 	set_light
-elif [ "$(cat /home/$USER/.xsettingsd | grep -oP '(?<=Net/ThemeName "cloudy-alliebeans-)\w+')" = "light" ]; then
+elif [ "$(cat /home/$USER/.xsettingsd | grep -oP '(?<=Net/ThemeName "at-deb-)\w+')" = "light" ]; then
 	set_dark
 fi
 
