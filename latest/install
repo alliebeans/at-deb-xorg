@@ -106,6 +106,7 @@ run(){
         echo_warn "Reboot and connect to wifi via nmcli, i.e. 'nmcli device wifi connect -a' ."
         ;;
     harden)
+        confirm_nmcli
         harden
         snapper create -d "harden"
         update-grub
@@ -119,6 +120,14 @@ run(){
         update-grub
         echo_ln
         echo_ok "xorg installation is done." ; echo
+        echo_inf "Reboot to enable xorg server..."
+        ;;
+    configure)
+        configure
+        snapper create -d "configure"
+        update-grub
+        echo_ln
+        echo_ok "Configuring system done."
         echo_warn "Reboot to finish installation."
         ;;
     *)

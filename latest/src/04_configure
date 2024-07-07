@@ -1,0 +1,85 @@
+#!/bin/bash
+
+configure(){
+    echo "Configuring system..."
+    local name="configure"
+    set_snapper_apt_rule 0
+    echo_ln
+    apt_routine
+    echo_ln
+    check_conf_exists $name
+
+    echo_inf "Starting firefox to generate a 'default-esr' profile..."
+    firefox-esr &
+    sleep 5
+    kill -15 "$(pidof firefox-esr)"
+
+    ESR_DIR=$(cd $_HOME/.mozilla/firefox/ && find -type d -iname "*.default-esr" | cut -c 3-)
+    if ! [ -d "$_HOME/.mozilla/firefox/$ESR_DIR" ]; then
+        error 3 "No .mozilla/ directory generated"
+    fi
+
+    # /org/gtk/settings/
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/date-format "'regular'"
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/location-mode "'path-bar'"
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/show-hidden true
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/show-size-column true
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/sidebar-width 202
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/sort-directories-first true
+    sudo -u $SUDO_USER dconf write /org/gtk/settings/type-format "'mime'"
+
+    # /org/gnome/desktop/interface
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/font-name "'Clear Sans 11'"
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/gtk-theme "'at-deb-dark'"
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/icon-theme "'Boston_cardboard'"
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/monospace-font-name "'JetBrains Mono 11'"
+
+    # /org/nemo/
+    sudo -u $SUDO_USER dconf write /org/nemo/icon-view/default-zoom-level "'small'"
+    sudo -u $SUDO_USER dconf write /org/nemo/icon-view/labels-beside-icons false
+    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-column-order ['name', 'size', 'type', 'detailed_type', 'date_modified', 'date_created_with_time', 'date_accessed', 'date_created', 'group', 'where', 'mime_type', 'date_modified_with_time', 'octal_permissions', 'owner', 'permissions', 'selinux_context']
+    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-visible-columns ['name', 'size', 'detailed_type', 'date_modified', 'date_created_with_time', 'octal_permissions']
+    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-actions ['set-resolution.nemo_action', 'mount-archive.nemo_action', 'add-desklets.nemo_action', 'change-background.nemo_action', 'set-as-background.nemo_action']
+    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-extensions ['NemoFileRoller']
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/default-sort-order "'type'"
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/detect-content false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/executable-text-activation "'display'"
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-advanced-permissions true
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-bookmarks-in-to-menus false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-compact-view-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-edit-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-hidden-files true
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-location-entry true
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-next-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-places-in-to-menus false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-search-icon-toolbar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/sort-favorites-first false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/sidebar-bookmark-breakpoint 0
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/sidebar-width 173
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/side-pane-view "'tree'"
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-sidebar false
+    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-toolbar true
+
+    # /org/xfce/mousepad/
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/auto-indent true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/color-scheme "'at-deb-dark'"
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/font-name "'JetBrains Mono 11'"
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/highlight-current-line false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/match-braces true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-endings false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-numbers true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-whitespace false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/word-wrap true
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/menubar-visible false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/opening-mode "'window'"
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/path-in-title false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-size false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-state false
+    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/statusbar-visible true
+
+    $BASE_DIR/etc/$name/customise-firefox-esr.sh ; echo
+
+    apt_routine
+
+    set_snapper_apt_rule 1
+}

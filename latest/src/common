@@ -33,6 +33,21 @@ echo_ln(){
     echo -e "\n"
 }
 
+confirm_nmcli(){
+    echo_warn "Are you connected to the Internet?"
+    echo_inf "If not, run 'nmcli dev wifi con -a' before continuing..." ; echo
+    read -p "To abort, type ABORT: " confirmation
+
+    case $confirmation in
+        ABORT )
+            echo ; echo "Aborting..."
+            exit 0
+            ;;
+        * )
+            ;;
+    esac
+}
+
 # Apt
 apt_routine(){
     apt update

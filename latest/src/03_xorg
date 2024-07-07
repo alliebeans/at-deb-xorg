@@ -55,10 +55,10 @@ install_wm(){
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/terminalrc /home/$SUDO_USER/.config/xfce4/terminal/
 
     # GVim only for +clipboard compilation
-    update-alternatives --remove vi /usr/bin/vim.gtk3
-    update-alternatives --remove vimdiff /usr/bin/vim.gtk3
-    update-alternatives --remove editor /usr/bin/vim.gtk3
-    update-alternatives --install /usr/bin/editor editor /usr/bin/vim.basic 1
+    sudo -u $SUDO_USER update-alternatives --remove vi /usr/bin/vim.gtk3
+    sudo -u $SUDO_USER update-alternatives --remove vimdiff /usr/bin/vim.gtk3
+    sudo -u $SUDO_USER update-alternatives --remove editor /usr/bin/vim.gtk3
+    sudo -u $SUDO_USER update-alternatives --install /usr/bin/editor editor /usr/bin/vim.basic 1
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.vimrc /home/$SUDO_USER/
 
     sed -i "s/CUSTOMUSER/$SUDO_USER/" $BASE_DIR/etc/$name/xfce4-screenshooter
@@ -119,75 +119,20 @@ install_wm(){
 
     # Theming: themes -- switch between light/dark themes
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/themes /usr/local/bin/
+    echo 'Net/ThemeName "at-deb-dark"' | sudo -u $SUDO_USER tee /home/$SUDO_USER/.xsettingsd
 
     # Theming: wallpapers -- set default wallpaper
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/wallpapers /usr/local/bin/
     $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/wallpapers.rasi /usr/local/lib/wallpapers/
+    addgroup wallpapers
+    adduser $SUDO_USER wallpapers
     echo "default" | tee -a /var/local/wallpapers/current-wallpaper
+    chown root:wallpapers /var/local/wallpapers/current-wallpaper
+    chmod 774 /var/local/wallpapers/current-wallpaper
 
     # Theming: GTK settings
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/gtkfilechooser.ini /home/$SUDO_USER/.config/gtk-2.0/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/settings.ini /home/$SUDO_USER/.config/gtk-3.0/
-
-    # Theming: dconf settings
-
-    # /org/gtk/settings/
-    sudo -u $SUDO_USER dconf write /org/gtk/settings/date-format "'regular'"
-    sudo -u $SUDO_USER dconf write /org/gtk/settings/location-mode "'path-bar'"
-    sudo -u $SUDO_USER dconf write /org/gtk/settings/show-hidden true
-    sudo -u $SUDO_USER dconf write /org/gtk/settings/show-size-column true
-    sudo -u $SUDO_USER dconf write /org/gtk/settings/sidebar-width 202
-    sudo -u $SUDO_USER dconf write /org/gtk/settings/sort-directories-first true
-    sudo -u $SUDO_USER dconf write /org/gtk/settings/type-format "'mime'"
-
-    # /org/gnome/desktop/interface
-    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/font-name "'Clear Sans 11'"
-    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/gtk-theme "'at-deb-dark'"
-    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/icon-theme "'Boston_cardboard'"
-    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/monospace-font-name "'JetBrains Mono 11'"
-
-    # /org/nemo/
-    sudo -u $SUDO_USER dconf write /org/nemo/icon-view/default-zoom-level "'small'"
-    sudo -u $SUDO_USER dconf write /org/nemo/icon-view/labels-beside-icons false
-    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-column-order ['name', 'size', 'type', 'detailed_type', 'date_modified', 'date_created_with_time', 'date_accessed', 'date_created', 'group', 'where', 'mime_type', 'date_modified_with_time', 'octal_permissions', 'owner', 'permissions', 'selinux_context']
-    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-visible-columns ['name', 'size', 'detailed_type', 'date_modified', 'date_created_with_time', 'octal_permissions']
-    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-actions ['set-resolution.nemo_action', 'mount-archive.nemo_action', 'add-desklets.nemo_action', 'change-background.nemo_action', 'set-as-background.nemo_action']
-    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-extensions ['NemoFileRoller']
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/default-sort-order "'type'"
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/detect-content false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/executable-text-activation "'display'"
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-advanced-permissions true
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-bookmarks-in-to-menus false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-compact-view-icon-toolbar false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-edit-icon-toolbar false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-hidden-files true
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-location-entry true
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-next-icon-toolbar false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-places-in-to-menus false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/show-search-icon-toolbar false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/sort-favorites-first false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/sidebar-bookmark-breakpoint 0
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/sidebar-width 173
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/side-pane-view "'tree'"
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-sidebar false
-    sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-toolbar true
-
-    # /org/xfce/mousepad/
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/auto-indent true
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/color-scheme "'at-deb-dark'"
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/font-name "'JetBrains Mono 11'"
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/highlight-current-line false
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/match-braces true
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-endings false
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-line-numbers true
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/show-whitespace false
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/word-wrap true
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/menubar-visible false
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/opening-mode "'window'"
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/path-in-title false
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-size false
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-state false
-    sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/statusbar-visible true
 
     echo_ok "$name installed."
 }
@@ -196,12 +141,8 @@ install_misc-apps(){
     local name="misc-apps"
     check_conf_exists $name
     lists $name
-
-    $BASE_DIR/etc/$name/customise-firefox-esr.sh ; echo
-
     echo_ok "$name installed."
 }
-
 
 install_xorg(){
     echo "Install xorg..."
