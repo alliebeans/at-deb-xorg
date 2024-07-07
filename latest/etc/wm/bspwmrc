@@ -31,7 +31,6 @@ bspc config borderless_monocle			true
 bspc config single_monocle				false
 bspc config gapless_monocle				true
 bspc config focus_follows_pointer		true
-bspc config pointer_follows_focus       true
 bspc config remove_disabled_monitors	true
 bspc config merge_overlapping_monitors	true
 bspc config pointer_action1				move
@@ -96,7 +95,7 @@ fi
 if ! pgrep -x dunst > /dev/null; then
 	dunst &
 elif pgrep -x dunst > /dev/null; then
-	[ kill -15 "$(pidof dunst)" ] && dunst &
+	kill -15 "$(pidof dunst)" && dunst &
 fi
 
 # xsettings daemon

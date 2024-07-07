@@ -16,7 +16,7 @@ if [ "$1" == "-d" ] ||
    	valid=0
    	if [ "${brightness}" == "10.000000" ]; then
 		display_brightness=$(printf "%.0f" "$brightness")
-		notify-send "Brightness: ${display_brightness}%"
+		notify-send "brightness" "Brightness is at ${display_brightness}%."
 	 	exit 0
 	else
 		xbacklight -dec 10
@@ -29,7 +29,7 @@ if [ "$1" == "-i" ] ||
    	valid=0
    	if [ "${brightness}" == "100.000000" ]; then
 		display_brightness=$(printf "%.0f" "$brightness")
-		notify-send "Brightness: ${display_brightness}%"
+		notify-send "brightness" "Brightness is at ${display_brightness}%."
 	 	exit 0
 	else
 		xbacklight -inc 10

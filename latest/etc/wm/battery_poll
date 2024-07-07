@@ -3,7 +3,7 @@
 # Notification function
 print_critical() {
 	local low="$1"
-	notify-send -u critical "Connect charger" "Battery low: $low%";
+	notify-send -u critical "Connect charger" "Battery is at $low%.";
 }
 
 # Get full energy level
@@ -12,7 +12,7 @@ declare -i is_notified=0
 
 # Poll every 120 seconds
 while true; do
-	status=$(cat /sys/class/power_supply/BAT0/status)
+	local status=$(cat /sys/class/power_supply/BAT0/status)
 
 	if [ "$status" != "Discharging" ];then
 		is_notified=0;
@@ -20,8 +20,8 @@ while true; do
 	fi
 
 	if [ "$status" == "Discharging" ];then
-		now=$(cat /sys/class/power_supply/BAT0/energy_now);
-		percent=$(calc floor\($now/$full*100\) );
+		local now=$(cat /sys/class/power_supply/BAT0/energy_now);
+		local percent=$(calc floor\($now/$full*100\) );
 
 		if [ $is_notified == 1 ] && [ $percent -le "8" ];then
 			print_critical $percent;

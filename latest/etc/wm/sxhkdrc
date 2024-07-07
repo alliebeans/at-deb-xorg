@@ -26,11 +26,11 @@ super + r
 
 # Reload sxhkd .config
 super + Escape
-	pkill -USR1 -x sxhkd; notify-send 'sxhkd' 'Reloaded .config'
+	pkill -USR1 -x sxhkd; notify-send 'sxhkd' 'sxhkd configuration was reloaded.'
 
 # Restart, quit bspwm
 super + shift + ctrl + r
-	bspc wm -r; notify-send 'bspwm' 'Restarted'
+	bspc wm -r; notify-send 'bspwm' 'bspwm was restarted.'
 
 super + shift + ctrl + alt + q
 	bspc quit
