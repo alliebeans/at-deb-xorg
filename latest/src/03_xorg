@@ -6,26 +6,6 @@ install_xorg-base(){
     lists $name
 
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.Xmodmap /home/$SUDO_USER/
-    # xbacklight
-    # ----------
-    #   Notes:
-    #   Only Intel graphics drivers supported.
-    #   Tries to find the correct value as identifier for the main display: 'Screen 0'.
-    #   If this doesn't work, do the following:
-    #   Check output from 'xrandr --verbose' command and manually insert correct identifier value into 20-intel.conf.
-
-    local graphics=$(lspci | grep VGA | grep -oP 'Intel')
-
-    if [ $graphics = "Intel" ]; then
-        pkg xbacklight
-
-        local identifier=$(xrandr --verbose | grep -oP -m 1 '(?<=Identifier: )\w+')
-
-        sed -i "s/UNDEFINED/$identifier/g" $BASE_DIR/etc/$name/20-intel.conf
-
-        $ROOT_INSTALL -d /etc/X11/xorg.conf.d/
-        $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/20-intel.conf /etc/X11/xorg.conf.d/
-    fi
 
     echo_ln ; echo_ok "$name installed." ; echo_ln
 }
@@ -55,10 +35,12 @@ install_wm(){
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/terminalrc /home/$SUDO_USER/.config/xfce4/terminal/
 
     # GVim only for +clipboard compilation
-    sudo -u $SUDO_USER update-alternatives --remove vi /usr/bin/vim.gtk3
-    sudo -u $SUDO_USER update-alternatives --remove vimdiff /usr/bin/vim.gtk3
-    sudo -u $SUDO_USER update-alternatives --remove editor /usr/bin/vim.gtk3
-    sudo -u $SUDO_USER update-alternatives --install /usr/bin/editor editor /usr/bin/vim.basic 1
+    update-alternatives --remove vi /usr/bin/vim.gtk3
+    update-alternatives --remove vimdiff /usr/bin/vim.gtk3
+    update-alternatives --remove editor /usr/bin/vim.gtk3
+    update-alternatives --install /usr/bin/vi vi /usr/bin/vim.basic 1
+    update-alternatives --install /usr/bin/vimdiff vimdiff /usr/bin/vim.basic 1
+    update-alternatives --install /usr/bin/editor editor /usr/bin/vim.basic 1
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.vimrc /home/$SUDO_USER/
 
     sed -i "s/CUSTOMUSER/$SUDO_USER/" $BASE_DIR/etc/$name/xfce4-screenshooter

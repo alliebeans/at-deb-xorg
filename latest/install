@@ -16,6 +16,7 @@ export SRC_DIR
 . "$SRC_DIR"/01_base
 . "$SRC_DIR"/02_harden
 . "$SRC_DIR"/03_xorg
+. "$SRC_DIR"/04_configure
 
 # Error checking
 error(){

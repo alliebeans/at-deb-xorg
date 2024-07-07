@@ -9,13 +9,35 @@ configure(){
     echo_ln
     check_conf_exists $name
 
-    echo_inf "Starting firefox to generate a 'default-esr' profile..."
-    firefox-esr &
-    sleep 5
-    kill -15 "$(pidof firefox-esr)"
+    # xbacklight
+    # ----------
+    #   Notes:
+    #   Only Intel graphics drivers supported.
+    #   Tries to find the correct value as identifier for the main display: 'Screen 0'.
+    #   If this doesn't work, do the following:
+    #   Check output from 'xrandr --verbose' command and manually insert correct identifier value into 20-intel.conf.
+    #
+##### Not needed?
+#    local graphics=$(lspci | grep VGA | grep -oP 'Intel')
+#
+#    if [ $graphics = "Intel" ]; then
+#        pkg xbacklight
+#
+#        local identifier=$(xrandr --verbose | grep -oP -m 1 '(?<=Identifier: )\w+')
+#
+#        sed -i "s/UNDEFINED/$identifier/g" $BASE_DIR/etc/$name/20-intel.conf
+#
+#        $ROOT_INSTALL -d /etc/X11/xorg.conf.d/
+#        $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/20-intel.conf /etc/X11/xorg.conf.d/
+#    fi
 
-    ESR_DIR=$(cd $_HOME/.mozilla/firefox/ && find -type d -iname "*.default-esr" | cut -c 3-)
-    if ! [ -d "$_HOME/.mozilla/firefox/$ESR_DIR" ]; then
+    echo_inf "Starting firefox to generate a 'default-esr' profile..."
+    sudo -u $SUDO_USER firefox-esr &
+    sleep 3
+    kill -15 "$(pidof -s firefox-esr)"
+
+    ESR_DIR=$(cd /home/$SUDO_USER/.mozilla/firefox/ && find -type d -iname "*.default-esr" | cut -c 3-)
+    if ! [ -d "/home/$SUDO_USER/.mozilla/firefox/$ESR_DIR" ]; then
         error 3 "No .mozilla/ directory generated"
     fi
 
