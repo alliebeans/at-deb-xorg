@@ -27,7 +27,7 @@ install_xorg-base(){
         $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/20-intel.conf /etc/X11/xorg.conf.d/
     fi
 
-    echo_ln ; echo_ok "$name installed."
+    echo_ln ; echo_ok "$name installed." ; echo_ln
 }
 
 install_wm(){
@@ -134,14 +134,14 @@ install_wm(){
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/gtkfilechooser.ini /home/$SUDO_USER/.config/gtk-2.0/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/settings.ini /home/$SUDO_USER/.config/gtk-3.0/
 
-    echo_ok "$name installed."
+    echo_ok "$name installed." ; echo_ln
 }
 
 install_misc-apps(){
     local name="misc-apps"
     check_conf_exists $name
     lists $name
-    echo_ok "$name installed."
+    echo_ok "$name installed." ; echo_ln
 }
 
 install_xorg(){

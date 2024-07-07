@@ -49,7 +49,7 @@ install_nmcli(){
 
     systemctl daemon-reload
 
-    echo_ln ; echo_ok "NetworkManager, $name installed."
+    echo_ln ; echo_ok "NetworkManager, $name installed." ; echo_ln
 }
 
 install_base(){

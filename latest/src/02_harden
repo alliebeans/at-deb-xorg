@@ -36,7 +36,7 @@ install_tpm2-luks-decryption(){
         dracut -f;
         update-grub;
 
-        echo_ln ; echo_ok "TPM2 LUKS decryption installed."
+        echo_ln ; echo_ok "TPM2 LUKS decryption installed." ; echo_ln
     else
         echo_warn "No TPM2 module detected, skipping..."
     fi
@@ -56,7 +56,7 @@ harden_kernel(){
 
     service procps force-reload
 
-    echo_ln ; echo_ok "$name installed."
+    echo_ln ; echo_ok "$name installed." ; echo_ln
 }
 
 harden_network(){
@@ -88,7 +88,7 @@ harden_network(){
     # Need to SSH into this machine? -- uncomment this
     # pkg knockd
 
-    echo_ln ; echo_ok "$name installed."
+    echo_ln ; echo_ok "$name installed." ; echo_ln
 }
 
 harden_desktop(){
@@ -142,7 +142,7 @@ harden_desktop(){
 	    echo_warn "Warning: UEFI SecureBoot is not enabled."
     fi
 
-    echo_ln ; echo_ok "$name installed."
+    echo_ln ; echo_ok "$name installed." ; echo_ln
 }
 
 harden_apparmor(){
@@ -151,7 +151,7 @@ harden_apparmor(){
     lists $name
 
     # apparmor.d -- TODO
-    echo_ln ; echo_ok "$name installed."
+    echo_ln ; echo_ok "$name installed." ; echo_ln
 }
 
 harden(){
