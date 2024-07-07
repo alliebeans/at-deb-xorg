@@ -158,6 +158,7 @@ Finish the installer.
   2. `at-deb-xorg/install base`
   3. `at-deb-xorg/install harden`
   4. `at-deb-xorg/install xorg`
+  5. `at-deb-xorg/install configure`
 
 ## 3. Using btrfs/snapper/grub-btrfs
 
