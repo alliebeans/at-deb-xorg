@@ -69,6 +69,7 @@ bspc config pointer_action3				resize_side
 # warning =     $yellow
 # selection =   #3f3f41
 # blue_darker = #0006ff
+# cyan_faded =  #008888
 # gray	=       #555555
 # red 	=       #ff3e7a
 # green =       #55ff55
