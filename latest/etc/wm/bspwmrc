@@ -1,19 +1,42 @@
 #! /bin/sh
 
-# sxhkd
-if ! pgrep -x sxhkd > /dev/null; then
-	sxhkd &
+# Monitors: get connected monitors
+for MONITOR_STATUS in $(ls -f -1 /sys/class/drm/[card0-]*/status); do
+    if [ "$(cat $MONITOR_STATUS )" = "connected" ]; then
+        MONITOR_NAME_DRM="$(echo $MONITOR_STATUS | grep -oP '(?<=/sys/class/drm/card0-)[^\/]+')"
+        if [ $(echo $MONITOR_NAME_DRM | grep -c "eDP") -gt 0 ]; then
+            MONITOR_MAIN_DRM=$NAME
+        elif [ $(echo $MONITOR_NAME_DRM | grep -c "HDMI") -gt 0 ]; then
+            MONITOR_HDMI_DRM=$NAME
+        fi
+    fi
+done
+
+# Monitors: get Xorg monitor names
+for MONITOR_NAME_XORG in $(xrandr --verbose | grep '[^dis]connected' | awk '{print $1}'); do
+    if [ $(echo $MONITOR_NAME_XORG | grep -c "eDP") -gt 0 ]; then
+        MONITOR_MAIN_XORG=$MONITOR_NAME_XORG
+elif [ $(echo $MONITOR_NAME_XORG | grep -c "HDMI") -gt 0 ]; then
+        MONITOR_HDMI_XORG=$MONITOR_NAME_XORG
+    fi
+done
+
+# Monitors: set main monitor settings
+xrandr --output $MONITOR_MAIN_XORG --primary --mode 1920x1080 --rotate normal
+
+# Monitors: override settings if HDMI connected
+if [ ${#MONITOR_HDMI_XORG} -gt 0 ]; then
+    xrandr --output $MONITOR_MAIN_XORG --primary --mode 1920x1080 --rotate normal --output $MONITOR_HDMI_XORG --mode 1920x1080 --rotate normal --above $MONITOR_MAIN_XORG
 fi
 
-# Monitor settings
-xrandr --output eDP1 --primary --mode 1920x1080 --rotate normal
-
-# Monitor settings: override if HDMI1 connected
-bash hdmi_init &
+# sxhkd
+if ! pgrep -x sxhkd > /dev/null; then
+    sxhkd &
+fi
 
 # bspwm Settings
-bspc monitor eDP1 -d 0 1 2 3 4 5 6
-bspc monitor HDMI1 -d 7 8 9 10 11 12 13
+bspc monitor $MONITOR_MAIN_XORG -d 0 1 2 3 4 5 6
+bspc monitor $MONITOR_HDMI_XORG -d 7 8 9 10 11 12 13
 
 bspc config border_width				0
 bspc config border_radius				6
@@ -37,20 +60,24 @@ bspc config pointer_action1				move
 bspc config pointer_action2				resize_corner
 bspc config pointer_action3				resize_side
 
-#### coloring ####
-# background = 	#222223
-# foreground = 	#f9f9f9
-# gray	= 	#555555
-# red 	= 	#ff3e7a
-# green = 	#55ff55
-# yellow = 	#ffff55
-# blue = 	#0048ff
-# lilac = 	#ff55e9
-# cyan = 	#55ffff
-# white	= 	#f8f8f8
-# alert	= 	#ff0054
-# selection = 	#3f3f41
-# blue_darker =	#0006ff
+####### Colors #######
+# at-deb-dark
+# -----------
+# background =  #222223
+# foreground =  #f9f9f9
+# alert	=       #ff0044
+# warning =     $yellow
+# selection =   #3f3f41
+# blue_darker = #0006ff
+# gray	=       #555555
+# red 	=       #ff3e7a
+# green =       #55ff55
+# yellow =      #ffff55
+# blue =        #0048ff
+# lilac =       #ff55e9
+# cyan =        #55ffff
+# white	=       #f8f8f8
+######################
 
 bspc config normal_border_color		"#2f2f30"
 bspc config active_border_color		"#2f2f30"
@@ -59,11 +86,11 @@ bspc config presel_feedback_color	"#2f2f30"
 
 bspc rule -a Dialog state=floating center=on
 bspc rule -a Code desktop='^3' follow=off
-bspc rule -a discord monitor=eDP1 desktop='^7' follow=on
+bspc rule -a discord monitor=$MONITOR_MAIN_XORG desktop='^7' follow=on
 
 # Policykit
 if ! pgrep -f /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 > /dev/null; then
-	/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+    /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
 fi
 
 # Touchpad settings
@@ -74,17 +101,17 @@ xmodmap /home/$USER/.Xmodmap
 
 # Battery polling
 if ! pgrep -x battery_poll > /dev/null; then
-	bash /usr/local/libexec/battery_poll &
+    bash /usr/local/libexec/battery_poll &
 fi
 
 # Lockscreen
 if ! pgrep -x xss-lock > /dev/null; then
-	xss-lock -- /usr/local/bin/lockscreen &
+    xss-lock -- /usr/local/bin/lockscreen &
 fi
 
 # Compositor
 if ! pgrep -x picom > /dev/null; then
-	picom --daemon &
+    picom --daemon &
 fi
 
 # Restart daemons
@@ -93,34 +120,40 @@ fi
 
 # Notification daemon
 if ! pgrep -x dunst > /dev/null; then
-	dunst &
+    dunst &
 elif pgrep -x dunst > /dev/null; then
-	kill -15 "$(pidof dunst)" && dunst &
+    kill -15 "$(pidof dunst)" && dunst &
 fi
 
 # xsettings daemon
 if ! pgrep -x xsettingsd > /dev/null; then
-	xsettingsd &
+    xsettingsd &
 elif pgrep -x xsettingsd > /dev/null; then
-	kill -15 "$(pidof xsettingsd)" && xsettingsd &
+    kill -15 "$(pidof xsettingsd)" && xsettingsd &
 fi
 
 # Wallpaper
 while read line; do
-	selected=$(echo $line)
+    selected=$(echo $line)
 done < /var/local/wallpapers/current-wallpaper
 
 feh --bg-fill /usr/local/share/themes/at-deb-theme/wallpapers/$selected/desktop/1920x1080.png &
 
-# Set Polybar environment variables
+# Polybar: set environment variables
+export POLYBAR_MONITOR_MAIN=$MONITOR_MAIN_XORG
+export POLYBAR_MONITOR_HDMI=$MONITOR_HDMI_XORG
 POLYBAR_WLP="$(cat /proc/net/wireless | grep -oP 'wlp[^:]+')"
 export POLYBAR_WLP
 
-# Polybar
-bash /usr/local/libexec/polybar_init &
-bash /usr/local/libexec/polybar_hdmi_init &
+# Polybar: init
+killall -q polybar
+polybar --config=$HOME/.config/polybar/polybar.ini main 2>&1 | tee -a /tmp/polybar.log & disown
+
+if [ ${#MONITOR_HDMI_XORG} -gt 0 ]; then
+    polybar --config=$HOME/.config/polybar/config.ini hdmi &
+fi
 
 # xfce4-clipman
 if ! pgrep -x xfce4-clipman > /dev/null; then
-	xfce4-clipman &
+    xfce4-clipman &
 fi
