@@ -5,6 +5,7 @@ CURRENT_WINDOW="$(bspc query -N -n focused.window)"
 
 set_light(){
 	sed -i '/Net\/ThemeName/c\Net\/ThemeName "at-deb-light"' /home/$USER/.xsettingsd
+	dconf write /org/xfce/mousepad/preferences/view/color-scheme "'at-deb-light'"
 	sed -i "s/#f8f8f8/#070707/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#222223/#dddddc/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#333335/#ccccc5/" /home/$USER/.config/dunst/dunstrc
@@ -18,6 +19,7 @@ set_light(){
 
 set_dark(){
 	sed -i '/Net\/ThemeName/c\Net\/ThemeName "at-deb-dark"' /home/$USER/.xsettingsd
+	dconf write /org/xfce/mousepad/preferences/view/color-scheme "'at-deb-dark'"
 	sed -i "s/#070707/#f8f8f8/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#dddddc/#222223/" /home/$USER/.config/dunst/dunstrc
 	sed -i "s/#ccccc5/#333335/" /home/$USER/.config/dunst/dunstrc
