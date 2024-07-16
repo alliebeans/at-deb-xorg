@@ -59,6 +59,6 @@ frame_color = "#222223"
 
 [urgency_critical]
 background = "#222223"
-foreground = "#ffff55"
+foreground = "#f8f8f8"
 frame_color = "#ffff55"
 default_icon = /home/CUSTOMUSER/.icons/Boston_cardboard/legacy/16/dialog-warning.svg
