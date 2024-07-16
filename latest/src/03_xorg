@@ -69,23 +69,23 @@ install_wm(){
     7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-dark.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-base/
     7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-light.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-base/
     7z x $BASE_DIR/etc/$name/at-deb-theme/gtk-lightdm/at-deb-dark-lightdm-greeter.7z -o$BASE_DIR/etc/$name/at-deb-theme/gtk-lightdm/
-    7z x $BASE_DIR/etc/$name/at-deb-theme/icons/Boston_cardboard.7z -o$BASE_DIR/etc/$name/at-deb-theme/icons/
+    7z x $BASE_DIR/etc/$name/at-deb-theme/icons/Boston-at-deb.7z -o$BASE_DIR/etc/$name/at-deb-theme/icons/
     rm -rf $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-dark.7z
     rm -rf $BASE_DIR/etc/$name/at-deb-theme/gtk-base/at-deb-light.7z
     rm -rf $BASE_DIR/etc/$name/at-deb-theme/gtk-lightdm/at-deb-dark-lightdm-greeter.7z
-    rm -rf $BASE_DIR/etc/$name/at-deb-theme/icons/Boston_cardboard.7z
+    rm -rf $BASE_DIR/etc/$name/at-deb-theme/icons/Boston-at-deb.7z
     cp -r $BASE_DIR/etc/$name/at-deb-theme/ /usr/local/share/themes
     ln -s /usr/local/share/themes/at-deb-theme/gtk-base/at-deb-dark/ /usr/share/themes/
     ln -s /usr/local/share/themes/at-deb-theme/gtk-base/at-deb-light/ /usr/share/themes/
     ln -s /usr/local/share/themes/at-deb-theme/gtk-lightdm/at-deb-dark-lightdm-greeter/ /usr/share/themes/
-    ln -s /usr/local/share/themes/at-deb-theme/icons/Boston_cardboard /usr/share/icons
+    ln -s /usr/local/share/themes/at-deb-theme/icons/Boston-at-deb /usr/share/icons
     sed -i "/#greeter-hide-users=/c\greeter-hide-users=false" /etc/lightdm/lightdm.conf
     sed -i "/#greeter-allow-guest=/c\greeter-allow-guest=false" /etc/lightdm/lightdm.conf
     sed -i "/#allow-guest=/c\allow-guest=false" /etc/lightdm/lightdm.conf
     sed -i "/#background=/c\background=/usr/local/share/themes/at-deb-theme/wallpapers/default/login/1920x1080.png" /etc/lightdm/lightdm-gtk-greeter.conf
     sed -i "/#user-background=/c\user-background=true" /etc/lightdm/lightdm-gtk-greeter.conf
     sed -i "/#theme-name=/c\theme-name=at-deb-dark-lightdm-greeter" /etc/lightdm/lightdm-gtk-greeter.conf
-    sed -i "/#icon-theme-name=/c\icon-theme-name=Boston_cardboard" /etc/lightdm/lightdm-gtk-greeter.conf
+    sed -i "/#icon-theme-name=/c\icon-theme-name=Boston-at-deb" /etc/lightdm/lightdm-gtk-greeter.conf
     sed -i "/#font-name=/c\font-name=Clear Sans Medium" /etc/lightdm/lightdm-gtk-greeter.conf
     sed -i "/#indicators=/c\indicators=~power;~spacer;~clock" /etc/lightdm/lightdm-gtk-greeter.conf
     sed -i "/#clock-format=/c\clock-format=%H:%M:%S" /etc/lightdm/lightdm-gtk-greeter.conf

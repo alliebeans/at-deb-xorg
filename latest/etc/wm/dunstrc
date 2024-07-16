@@ -16,7 +16,7 @@ padding = 8
 horizontal_padding = 8
 text_icon_padding = 32
 frame_width = 1
-frame_color = ""#333335"
+frame_color = "#333335"
 gap_size = 1
 separator_color = "#333335"
 sort = yes
@@ -33,7 +33,7 @@ ignore_newline = no
 stack_duplicates = true
 hide_duplicate_count = true
 enable_recursive_icon_lookup = true
-icon_theme = "Boston_cardboard, Adwaita"
+icon_theme = "Boston-at-deb, Adwaita"
 icon_position = left
 min_icon_size = 16
 max_icon_size = 16
@@ -56,9 +56,11 @@ frame_color = "#222223"
 background = "#222223"
 foreground = "#f8f8f8"
 frame_color = "#222223"
+default_icon = /home/CUSTOMUSER/.icons/Boston-at-deb/legacy/16/dialog-information.png
+
 
 [urgency_critical]
 background = "#222223"
 foreground = "#f8f8f8"
 frame_color = "#ffff55"
-default_icon = /home/CUSTOMUSER/.icons/Boston_cardboard/legacy/16/dialog-warning.svg
+default_icon = /home/CUSTOMUSER/.icons/Boston-at-deb/legacy/16/dialog-warning.svg

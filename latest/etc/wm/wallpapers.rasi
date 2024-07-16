@@ -1,6 +1,6 @@
 configuration {
 	show-icons: false;
-	icon-theme: "Boston_cardboard";
+	icon-theme: "Boston-at-deb";
 	display-drun: "";
 	drun-display-format: "{name}";
 	disable-history: true;

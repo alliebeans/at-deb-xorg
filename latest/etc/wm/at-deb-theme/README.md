@@ -1,6 +1,8 @@
 # at-deb-theme
 
+Dark and light themes for `@deb:xorg`.
+
 ## Dependencies
 
 * **Fonts:** Clear Sans, JetBrains Mono
-* GTK3, GTK2, QT5
+* qt5ct

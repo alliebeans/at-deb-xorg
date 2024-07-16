@@ -53,7 +53,7 @@ configure(){
     # /org/gnome/desktop/interface
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/font-name "'Clear Sans 11'"
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/gtk-theme "'at-deb-dark'"
-    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/icon-theme "'Boston_cardboard'"
+    sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/icon-theme "'Boston-at-deb'"
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/monospace-font-name "'JetBrains Mono 11'"
 
     # /org/nemo/
