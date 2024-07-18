@@ -8,7 +8,7 @@ configuration {
 }
 
 * {
-    bg: #00008080;
+    bg: #22222380;
     fg: #f8f8f8;
     bg-alt: #f2f2f215;
     bg-selected: #474747;
