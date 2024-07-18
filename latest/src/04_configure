@@ -13,28 +13,29 @@ configure(){
     # ----------
     #   Notes:
     #   Only Intel graphics drivers supported.
-    #   Tries to find the correct value as identifier for the main display: 'Screen 0'.
+    #   Querying identifier for the main display: 'Screen 0'.
     #   If this doesn't work, do the following:
     #   Check output from 'xrandr --verbose' command and manually insert correct identifier value into 20-intel.conf.
     #
-##### Not needed?
-#    local graphics=$(lspci | grep VGA | grep -oP 'Intel')
-#
-#    if [ $graphics = "Intel" ]; then
-#        pkg xbacklight
-#
-#        local identifier=$(xrandr --verbose | grep -oP -m 1 '(?<=Identifier: )\w+')
-#
-#        sed -i "s/UNDEFINED/$identifier/g" $BASE_DIR/etc/$name/20-intel.conf
-#
-#        $ROOT_INSTALL -d /etc/X11/xorg.conf.d/
-#        $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/20-intel.conf /etc/X11/xorg.conf.d/
-#    fi
+
+    local graphics=$(lspci | grep VGA | grep -oP 'Intel')
+
+    if [ $graphics = "Intel" ]; then
+        pkg xbacklight
+
+        local identifier=$(xrandr --verbose | grep -oP -m 1 '(?<=Identifier: )\w+')
+
+        sed -i "s/UNDEFINED/$identifier/g" $BASE_DIR/etc/$name/20-intel.conf
+
+        $ROOT_INSTALL -d /etc/X11/xorg.conf.d/
+        $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/20-intel.conf /etc/X11/xorg.conf.d/
+
+        echo_ok "xbacklight configured." ;
+    fi
 
     echo_inf "Starting firefox to generate a 'default-esr' profile..."
-    sudo -u $SUDO_USER firefox-esr &
+    sudo -u $SUDO_USER firefox-esr & disown
     sleep 3
-    kill -15 "$(pidof -s firefox-esr)"
 
     ESR_DIR=$(cd /home/$SUDO_USER/.mozilla/firefox/ && find -type d -iname "*.default-esr" | cut -c 3-)
     if ! [ -d "/home/$SUDO_USER/.mozilla/firefox/$ESR_DIR" ]; then
@@ -49,20 +50,22 @@ configure(){
     sudo -u $SUDO_USER dconf write /org/gtk/settings/sidebar-width 202
     sudo -u $SUDO_USER dconf write /org/gtk/settings/sort-directories-first true
     sudo -u $SUDO_USER dconf write /org/gtk/settings/type-format "'mime'"
+    echo_ok "GTK configured." ;
 
     # /org/gnome/desktop/interface
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/font-name "'Clear Sans 11'"
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/gtk-theme "'at-deb-dark'"
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/icon-theme "'Boston-at-deb'"
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/monospace-font-name "'JetBrains Mono 11'"
+    echo_ok "GNOME desktop configured." ;
 
     # /org/nemo/
     sudo -u $SUDO_USER dconf write /org/nemo/icon-view/default-zoom-level "'small'"
     sudo -u $SUDO_USER dconf write /org/nemo/icon-view/labels-beside-icons false
-    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-column-order ['name', 'size', 'type', 'detailed_type', 'date_modified', 'date_created_with_time', 'date_accessed', 'date_created', 'group', 'where', 'mime_type', 'date_modified_with_time', 'octal_permissions', 'owner', 'permissions', 'selinux_context']
-    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-visible-columns ['name', 'size', 'detailed_type', 'date_modified', 'date_created_with_time', 'octal_permissions']
-    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-actions ['set-resolution.nemo_action', 'mount-archive.nemo_action', 'add-desklets.nemo_action', 'change-background.nemo_action', 'set-as-background.nemo_action']
-    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-extensions ['NemoFileRoller']
+    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-column-order "['name', 'size', 'type', 'detailed_type', 'date_modified', 'date_created_with_time', 'date_accessed', 'date_created', 'group', 'where', 'mime_type', 'date_modified_with_time', 'octal_permissions', 'owner', 'permissions', 'selinux_context']"
+    sudo -u $SUDO_USER dconf write /org/nemo/list-view/default-visible-columns "['name', 'size', 'detailed_type', 'date_modified', 'date_created_with_time', 'octal_permissions']"
+    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-actions "['set-resolution.nemo_action', 'mount-archive.nemo_action', 'add-desklets.nemo_action', 'change-background.nemo_action', 'set-as-background.nemo_action']"
+    sudo -u $SUDO_USER dconf write /org/nemo/plugins/disabled-extensions "['NemoFileRoller']"
     sudo -u $SUDO_USER dconf write /org/nemo/preferences/default-sort-order "'type'"
     sudo -u $SUDO_USER dconf write /org/nemo/preferences/detect-content false
     sudo -u $SUDO_USER dconf write /org/nemo/preferences/executable-text-activation "'display'"
@@ -81,6 +84,7 @@ configure(){
     sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/side-pane-view "'tree'"
     sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-sidebar false
     sudo -u $SUDO_USER dconf write /org/nemo/preferences/window-state/start-with-toolbar true
+    echo_ok "nemo configured." ;
 
     # /org/xfce/mousepad/
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/view/auto-indent true
@@ -98,6 +102,7 @@ configure(){
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-size false
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/remember-state false
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/statusbar-visible true
+    echo_ok "Mousepad configured." ;
 
     $BASE_DIR/etc/$name/customise-firefox-esr.sh ; echo
 
