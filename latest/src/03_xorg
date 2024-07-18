@@ -32,6 +32,7 @@ install_wm(){
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/picom.conf /home/$SUDO_USER/.config/picom/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/polybar.ini /home/$SUDO_USER/.config/polybar/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/dunstrc /home/$SUDO_USER/.config/dunst/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/conky.conf /home/$SUDO_USER/.config/conky/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/terminalrc /home/$SUDO_USER/.config/xfce4/terminal/
 
     # GVim only for +clipboard compilation

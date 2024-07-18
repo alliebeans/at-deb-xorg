@@ -4,6 +4,7 @@
 .config/picom
 .config/polybar
 .config/dunst
+.config/conky
 .config/xfce4
 .config/xfce4/terminal
 .config/fontconfig
