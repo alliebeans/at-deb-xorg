@@ -1,0 +1,5 @@
+#!/bin/bash
+
+xdg-user-dirs-update
+mkdir $HOME/.config
+mkdir -p $HOME/.local/share
