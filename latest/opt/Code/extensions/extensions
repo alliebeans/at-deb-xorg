@@ -1,0 +1,25 @@
+#! /bin/sh
+
+code --install-extension alexcvzz.vscode-sqlite
+code --install-extension dbaeumer.vscode-eslint
+code --install-extension dlasagno.rasi
+code --install-extension ecmel.vscode-html-css
+code --install-extension jmrog.vscode-nuget-package-manager
+code --install-extension karunamurti.tera
+code --install-extension lehwark.htmx-literals
+code --install-extension micjohansson.greyboard
+code --install-extension ms-azuretools.vscode-docker
+code --install-extension ms-dotnettools.csharp
+code --install-extension ms-dotnettools.vscode-dotnet-runtime
+code --install-extension ms-vscode.cpptools
+code --install-extension ms-vscode.cpptools-extension-pack
+code --install-extension ms-vscode.makefile-tools
+code --install-extension patcx.vscode-nuget-gallery
+code --install-extension pranaygp.vscode-css-peek
+code --install-extension rangav.vscode-thunder-client
+code --install-extension rust-lang.rust-analyzer
+code --install-extension tamasfe.even-better-toml
+code --install-extension twxs.cmake
+code --install-extension xabikos.JavaScriptSnippets
+code --install-extension yzhang.markdown-all-in-one
+code --install-extension Zignd.html-css-class-completion

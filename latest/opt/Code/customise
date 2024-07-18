@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# This is rather for documentation purposes, not a functioning script as of yet.
+
+echo This is rather for documentation purposes, not a functioning script as of yet, exiting...
+
+exit 0
+
+#if ! [ $(id -u) = 0 ]; then 
+#	echo "Need root privileges to customize Visual Studio Code, exiting..." ;
+#	exit 1 ;
+#fi
+
+# Check if VSCode is installed
+#if [ $(code --version) = "bash: code: command not found" ]; then
+#	echo "Can't find Visual Studio Code command, exiting..." ;
+#	exit 1 ;	
+#fi
+
+# Set installer variables
+#basedir="$(dirname "$(readlink -f "$0")")"
+#install_dir="install -v -o $SUDO_USER -g $SUDO_USER -d"
+#install_file="install -v -o $SUDO_USER -g $SUDO_USER --mode=644"
+#
+#################
+#
+# Install extensions
+#sudo -u $SUDO_USER $basedir/extensions/extensions
+#
+# Install theme
+#cp -r $basedir/extensions/alliebeans.alliebeans-darker-0.0.2 /home/$SUDO_USER/.vscode/extensions/
+#
+# Copy settings.json
+#$install_file $basedir/settings/settings.json /home/$SUDO_USER/.config/Code/User/
+#
+# Set permissions
+#sudo chmod +x /home/$SUDO_USER/.config/Code/User/settings.json
+#sudo chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.vscode/extensions/
