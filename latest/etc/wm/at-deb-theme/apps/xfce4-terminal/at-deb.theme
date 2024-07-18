@@ -1,8 +1,8 @@
 [Scheme]
 Name=at-deb
-ColorPalette=#111111;#cc0000;#00aa00;#aa5500;#0000aa;#aa00aa;#00aaaa;#aaaaaa;#555555;#ff3e7a;#55ff55;#ffff55;#0048ff;#ff55e9;#55ffff;#f9f9f9
-ColorForeground=#f9f9f9f9f9f9
-ColorSelection=#f9f9f9f9f9f9
+ColorPalette=#111111;#d63232;#00aa00;#aa5500;#0000aa;#aa00aa;#008888;#aaaaaa;#555555;#ff3e7e;#55ff55;#ffff55;#0048ff;#ff55e9;#55ffff;#f8f8f8
+ColorForeground=#f8f8f8f8f8f8
+ColorSelection=#f8f8f8f8f8f8
 ColorSelectionBackground=#340d340d340d
 ColorCursorUseDefault=FALSE
 ColorCursorForeground=#ffffffff5554
