@@ -114,6 +114,9 @@ install_wm(){
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/gtkfilechooser.ini /home/$SUDO_USER/.config/gtk-2.0/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/settings.ini /home/$SUDO_USER/.config/gtk-3.0/
 
+    # Set permissions
+    chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.config
+
     echo_ok "$name installed." ; echo_ln
 }
 
