@@ -3,6 +3,7 @@ rofi
 dmenu
 ranger
 i3lock
+conky
 feh
 dconf-cli
 lightdm

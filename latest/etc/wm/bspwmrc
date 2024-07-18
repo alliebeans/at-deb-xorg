@@ -25,7 +25,7 @@ done
 xrandr --output $MONITOR_MAIN_XORG --primary --mode 1920x1080 --rotate normal
 
 # Monitors: override settings if HDMI connected
-if [ ${#MONITOR_HDMI_XORG} -gt 0 ]; then
+if ! [ -z $MONITOR_HDMI_XORG ]; then
     xrandr --output $MONITOR_MAIN_XORG --primary --mode 1920x1080 --rotate normal --output $MONITOR_HDMI_XORG --mode 1920x1080 --rotate normal --above $MONITOR_MAIN_XORG
 fi
 
@@ -36,7 +36,9 @@ fi
 
 # bspwm Settings
 bspc monitor $MONITOR_MAIN_XORG -d 0 1 2 3 4 5 6
-bspc monitor $MONITOR_HDMI_XORG -d 7 8 9 10 11 12 13
+if ! [ -z $MONITOR_HDMI_XORG ]; then
+    bspc monitor $MONITOR_HDMI_XORG -d 7 8 9 10 11 12 13
+fi
 
 bspc config border_width				0
 bspc config border_radius				6
@@ -143,15 +145,23 @@ feh --bg-fill /usr/local/share/themes/at-deb-theme/wallpapers/$selected/desktop/
 # Polybar: set environment variables
 export POLYBAR_MONITOR_MAIN=$MONITOR_MAIN_XORG
 export POLYBAR_MONITOR_HDMI=$MONITOR_HDMI_XORG
-POLYBAR_WLP="$(cat /proc/net/wireless | grep -oP 'wlp[^:]+')"
-export POLYBAR_WLP
+export POLYBAR_WLP="$(cat /proc/net/wireless | grep -oP 'wlp[^:]+')"
 
 # Polybar: init
 killall -q polybar
 polybar --config=$HOME/.config/polybar/polybar.ini main 2>&1 | tee -a /tmp/polybar.log & disown
 
-if [ ${#MONITOR_HDMI_XORG} -gt 0 ]; then
-    polybar --config=$HOME/.config/polybar/config.ini hdmi &
+if ! [ -z $MONITOR_HDMI_XORG ]; then
+    polybar --config=$HOME/.config/polybar/polybar.ini hdmi &
+fi
+
+# Conky
+if pgrep -x conky > /dev/null; then
+    kill -15 "$(pidof conky)"
+fi
+conky -x 16 -y 24 & disown
+if ! [ -z $MONITOR_HDMI_XORG ]; then
+    conky -x 16 -y 1104 & disown
 fi
 
 # xfce4-clipman
