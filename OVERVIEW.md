@@ -14,18 +14,20 @@
 ### Theming
 
 * at-deb-theme:
-  * Base GTK theme: minimal dark gray theme with cyan accents¹.
+  * Base GTK theme: dark/light gray theme with cyan accents¹.
+    * Dark/light theme can be changed with key command `Super` + `Shift` + `T`.
   * Matching [VS Code](vscode) theme, terminal and [Mousepad](mousepad) color schemes.
   * Matching LightDM GTK theme.
   * Matching QT5 settings: color scheme, .qss theme.
-  * [Boston-Icons](https://github.com/thecheis/Boston-Icons)
+  * [Boston-Icons](https://github.com/thecheis/Boston-Icons) with modified matching colors.
 * Minimal polybar with [Material Symbols](https://fonts.google.com/icons) and rofi-implemented power menu.
 * Default fonts: [Clear Sans](https://github.com/intel/clear-sans) and [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono).
 
 ¹ Base GTK theme is a modified version of [Cloudy-Gtk-Themes](https://github.com/i-mint/Cloudy).
 
 #### Wallpapers
-*default*, *darker* and *colorful*.
+
+*default*, *darker*, *lines* and *colorful*.
 Desktop, DM and lockscreen wallpapers that can be changed with key command `Super` + `Shift` + `W`. <br>
 The default blue gradient is inspired by a [OS/2 Warp](https://en.wikipedia.org/wiki/OS/2) wallpaper.
 
