@@ -56,11 +56,9 @@ frame_color = "#222223"
 background = "#222223"
 foreground = "#f8f8f8"
 frame_color = "#222223"
-default_icon = /home/CUSTOMUSER/.icons/Boston-at-deb/legacy/16/dialog-information.png
-
 
 [urgency_critical]
 background = "#222223"
 foreground = "#f8f8f8"
 frame_color = "#ffff55"
-default_icon = /home/CUSTOMUSER/.icons/Boston-at-deb/legacy/16/dialog-warning.svg
+default_icon = /usr/share/icons/Boston-at-deb/legacy/16/dialog-warning.svg
