@@ -147,9 +147,9 @@ Finish the installer.
 
 ## 2. After first boot into Debian
 
-> Note: installer scripts are only *mostly* automatic, take care to follow all instructions.
+> Note: installer scripts are only *mostly* automatic, remember to carefully follow all instructions.
 
-1. If installation files are located in mounted USB mass storage. From mount directory, run `$ ./run_as_sudo` to copy all relevant files into ~.
+1. If installation files are located on root mounted USB mass storage. From mount directory, run `$ ./run_as_sudo` to copy all relevant files into ~.
 
 2. Populate ~ with standard user directories by running `at-deb-xorg/run_as_user`.
 
