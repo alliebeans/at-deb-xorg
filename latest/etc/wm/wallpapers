@@ -15,7 +15,7 @@ next=$(printf '%s\n' "default" "darker" "lines" "colorful"  | rofi -dmenu -theme
 echo $next > /var/local/wallpapers/current-wallpaper
 
 # If root, change LightDM background
-[ $UID -eq 0 ] && sed -i "s/$prev\//$next\//" /etc/lightdm/lightdm-gtk-greeter.conf
+if [ $(id -u) -eq 0 ] && sed -i "s/$prev\//$next\//" /etc/lightdm/lightdm-gtk-greeter.conf
 
 # Change background image
 feh --bg-fill /usr/local/share/themes/at-deb-theme/wallpapers/$next/desktop/1920x1080.png

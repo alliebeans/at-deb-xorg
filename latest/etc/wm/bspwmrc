@@ -41,7 +41,6 @@ if ! [ -z $MONITOR_HDMI_XORG ]; then
 fi
 
 bspc config border_width				0
-bspc config border_radius				6
 bspc config window_gap					4
 bspc config top_padding					29
 bspc config right_padding				0
@@ -135,12 +134,16 @@ elif pgrep -x xsettingsd > /dev/null; then
     kill -15 "$(pidof xsettingsd)" && xsettingsd &
 fi
 
-# Wallpaper
 while read line; do
-    selected=$(echo $line)
+	prev=$(echo $line)
 done < /var/local/wallpapers/current-wallpaper
 
-feh --bg-fill /usr/local/share/themes/at-deb-theme/wallpapers/$selected/desktop/1920x1080.png &
+# wallpapers
+while read wallpaper; do
+    CURRENT_WALLPAPER=$(echo $wallpaper)
+done < /var/local/wallpapers/current-wallpaper
+
+feh --bg-fill /usr/local/share/themes/at-deb-theme/wallpapers/$CURRENT_WALLPAPER/desktop/1920x1080.png &
 
 # Polybar: set environment variables
 export POLYBAR_MONITOR_MAIN=$MONITOR_MAIN_XORG
@@ -149,7 +152,7 @@ export POLYBAR_WLP="$(cat /proc/net/wireless | grep -oP 'wlp[^:]+')"
 
 # Polybar: init
 killall -q polybar
-polybar --config=$HOME/.config/polybar/polybar.ini main 2>&1 | tee -a /tmp/polybar.log & disown
+polybar --config=$HOME/.config/polybar/polybar.ini main & #2>&1 | tee -a /tmp/polybar.log & disown
 
 if ! [ -z $MONITOR_HDMI_XORG ]; then
     polybar --config=$HOME/.config/polybar/polybar.ini hdmi &

@@ -12,7 +12,7 @@ declare -i is_notified=0
 
 # Poll every 120 seconds
 while true; do
-	local status=$(cat /sys/class/power_supply/BAT0/status)
+	status=$(cat /sys/class/power_supply/BAT0/status)
 
 	if [ "$status" != "Discharging" ];then
 		is_notified=0;

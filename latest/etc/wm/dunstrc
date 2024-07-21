@@ -7,8 +7,7 @@ origin = top-right
 offset = 12x44
 scale = 0
 notification_limit = 5
-progress_bar false
-icon_corner_radius = 0
+progress_bar = false
 indicate_hidden = no
 transparency = 42
 separator_height = 2
