@@ -6,6 +6,7 @@ dbus-x11
 xinput
 numlockx
 pulseaudio
+pulseaudio-module-bluetooth
 alsa-utils
 pavucontrol
 volumeicon-alsa
