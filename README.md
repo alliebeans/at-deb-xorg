@@ -56,7 +56,13 @@ Installation/configuration script of [Debian](https://www.debian.org/).
 
 #### Wallpapers
 
+![default](https://raw.githubusercontent.com/alliebeans/at-deb-xorg/main/.extras/screenshots/default.png "default")
+![darker](https://raw.githubusercontent.com/alliebeans/at-deb-xorg/main/.extras/screenshots/darker.png "darker")
+![lines](https://raw.githubusercontent.com/alliebeans/at-deb-xorg/main/.extras/screenshots/lines.png "lines")
+![colorful](https://raw.githubusercontent.com/alliebeans/at-deb-xorg/main/.extras/screenshots/colorful.png "colorful")
+<br>
 *default*, *darker*, *lines* and *colorful*.
+
 Desktop, DM and lockscreen. The default blue gradient is inspired by the [OS/2 Warp](https://en.wikipedia.org/wiki/OS/2) wallpaper.
 
 ### Security
