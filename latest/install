@@ -99,6 +99,7 @@ run(){
         ;;
     base)
         snapper create -d "install filesystem"
+        update-grub
         install_base
         snapper create -d "install base"
         update-grub
@@ -109,21 +110,23 @@ run(){
     harden)
         confirm_nmcli
         harden
-        snapper create -d "harden"
         update-grub
         echo_ln
         echo_ok "Hardening done." ; echo
         echo_warn "Reboot to activate TPM2 LUKS decryption."
         ;;
     xorg)
+        snapper create -d "harden"
+        update-grub
         install_xorg
-        snapper create -d "install xorg"
         update-grub
         echo_ln
         echo_ok "xorg installation is done." ; echo
         echo_inf "Reboot to enable xorg server..."
         ;;
     configure)
+        snapper create -d "install xorg"
+        update-grub
         configure
         snapper create -d "configure"
         update-grub
