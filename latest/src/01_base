@@ -5,7 +5,7 @@ install_console-tools(){
     check_conf_exists $name
     lists $name
 
-    echo_ln ; echo_ok "$name installed"
+    echo_ln ; echo_ok "$name installed" ; echo_ln
 }
 
 install_power-management(){
@@ -17,7 +17,7 @@ install_power-management(){
     systemctl enable --now acpid
     $ROOT_INSTALL $BASE_DIR/etc/$name/tlp.conf /etc/
 
-    echo_ln ; echo_ok "$name installed"
+    echo_ln ; echo_ok "$name installed" ; echo_ln
 }
 
 install_misc-base(){
@@ -32,7 +32,7 @@ install_misc-base(){
     timedatectl set-local-rtc 0
     echo "Defaults pwfeedback" | tee /etc/sudoers.d/pwfeedback
 
-    echo_ln ; echo_ok "$name installed"
+    echo_ln ; echo_ok "$name installed" ; echo_ln
 }
 
 install_nmcli(){

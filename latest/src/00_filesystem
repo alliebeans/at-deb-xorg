@@ -8,7 +8,7 @@ install_zramswap(){
     systemctl restart zramswap.service
 
     if [ "$(free -h | grep -c Swap)" -gt 0 ]; then
-        echo_ln ; echo_ok "Swap partition installed."
+        echo_ln ; echo_ok "Swap partition installed." ; echo_ln
     else
         error 3 $name
     fi
@@ -55,7 +55,7 @@ install_snapper(){
     systemctl disable --now snapper-boot.timer
 
     if [ "$(btrfs su list / | grep -c @snapshots)" -gt 0 ]; then
-        echo_ln ; echo_ok "$name installed"
+        echo_ln ; echo_ok "$name installed" ; echo_ln
     else
         error 3 $name
     fi
@@ -82,7 +82,7 @@ install_grub-btrfs(){
     cd /home/$SUDO_USER
     rm -rf grub-btrfs/
 
-    echo_ln ; echo_ok "$name installed"
+    echo_ln ; echo_ok "$name installed" ; echo_ln
 }
 
 install_rollback-system(){
@@ -104,7 +104,7 @@ setup_default_snapshot(){
 
     sed -i "s/,subvol=@ / /" /etc/fstab
 
-    echo_ln ; echo_ok "'default root' snapshot setup done."
+    echo_ln ; echo_ok "'default root' snapshot setup done." ; echo_ln
 }
 
 install_filesystem(){
