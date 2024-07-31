@@ -66,10 +66,10 @@ error(){
 show_help(){
     echo -e "Usage: install [filesystem | base | harden | xorg ]"
     echo
-    error $1
+    error "$1"
 }
 
-if ! [ $(id -u) = 0 ]; then
+if ! [ "$(id -u)" = 0 ]; then
 	show_help 0
 fi
 
