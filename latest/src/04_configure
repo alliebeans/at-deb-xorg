@@ -104,6 +104,25 @@ configure(){
     sudo -u $SUDO_USER dconf write /org/xfce/mousepad/preferences/window/statusbar-visible true
     echo_ok "Mousepad configured." ;
 
+    # Set default apps
+    $USER_INSTALL -d /home/$SUDO_USER/.local/share/applications
+    echo "[Default Applications]
+text/css=code.desktop
+text/html=code.desktop
+text/x-javascript=code.desktop
+text/xml=code.desktop
+text/plain=org.xfce.mousepad.desktop
+text/markdown=org.xfce.mousepad.desktop
+application/x-shellscript=vim.desktop
+application/javascript=code.desktop
+application/pdf=org.gnome.Evince.desktop
+image/png=qimgv.desktop
+image/jpg=qimgv.desktop
+image/jpeg=qimgv.desktop
+image/gif=qimgv.desktop
+image/bmp=qimgv.desktop
+image/webp=qimgv.desktop" | sudo -u $SUDO_USER tee -a /home/$SUDO_USER/.local/share/applications/mimeapps.list
+
     $BASE_DIR/etc/$name/customise-firefox-esr.sh ; echo
 
     apt_routine
