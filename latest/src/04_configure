@@ -105,7 +105,7 @@ configure(){
     echo_ok "Mousepad configured." ;
 
     # Set default apps
-    $USER_INSTALL -d /home/$SUDO_USER/.local/share/applications
+    $USR_INSTALL -d /home/$SUDO_USER/.local/share/applications
     echo "[Default Applications]
 text/css=code.desktop
 text/html=code.desktop
