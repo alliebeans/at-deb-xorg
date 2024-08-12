@@ -4,7 +4,7 @@
 # Get Touchpad id
 TOUCHPAD=$(xinput list | grep Touchpad | grep -oP '(?<=id=)[0-9]+')
 
-if [ ${#touchpad} -eq 0 ]; then
+if [ ${#TOUCHPAD} -eq 0 ]; then
     TOUCHPAD=$(xinput list | grep Synaptics | grep -oP '(?<=id=)[0-9]+')
 fi
 
