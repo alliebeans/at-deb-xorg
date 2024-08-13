@@ -5,7 +5,7 @@ code --install-extension rogalmic.bash-debug
 code --install-extension timonwong.shellcheck
 
 # C / Embedded
-code --install-extension darus25.cortex-debug
+code --install-extension marus25.cortex-debug
 code --install-extension mcu-debug.debug-tracker-vscode
 code --install-extension mcu-debug.memory-view
 code --install-extension mcu-debug.peripheral-viewer
