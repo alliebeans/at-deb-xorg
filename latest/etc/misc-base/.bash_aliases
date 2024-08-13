@@ -33,6 +33,7 @@ alias remove='sudo apt remove'
 
 # git
 alias gits='git status'
+alias gitb='git branch'
 
 # xrandr
 alias hdmi='xrandr --output HDMI1 --same-as eDP1'
