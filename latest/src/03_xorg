@@ -51,7 +51,7 @@ install_wm(){
     echo 'PATH="$PATH:/usr/local/libexec:/usr/local/sbin"' /etc/environment.d/99local-extra-paths.conf # Extra local dirs in global $PATH
     $ROOT_INSTALL --mode=744 $BASE_DIR/etc/$name/touchpad_init /usr/local/libexec/
     $ROOT_INSTALL --mode=744 $BASE_DIR/etc/$name/battery_poll /usr/local/libexec/
-    $ROOT_INSTALL --mode=744 $BASE_DIR/etc/$name/switch_monitor_workspace /usr/local/libexec/
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/switch_monitor_workspace /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/brightness /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/powermenu /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/notify_usb_mount /usr/local/bin/
