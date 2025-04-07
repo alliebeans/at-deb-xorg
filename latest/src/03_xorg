@@ -55,6 +55,7 @@ install_wm(){
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/brightness /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/powermenu /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/notify_usb_mount /usr/local/bin/
+    $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/lockscreen_handler /usr/local/bin/
     $ROOT_INSTALL --mode=755 $BASE_DIR/etc/$name/lockscreen /usr/local/bin/
     $ROOT_INSTALL --mode=644 $BASE_DIR/etc/$name/powermenu.rasi /usr/local/lib/powermenu/
 

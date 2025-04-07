@@ -107,8 +107,8 @@ if ! pgrep -x battery_poll > /dev/null; then
 fi
 
 # Lockscreen
-if ! pgrep -x xss-lock > /dev/null; then
-    xss-lock -- /usr/local/bin/lockscreen &
+if ! pgrep -x lockscreen_handler > /dev/null; then
+    bash /usr/local/bin/lockscreen_handler &
 fi
 
 # Compositor
