@@ -59,6 +59,8 @@ configure(){
     sudo -u $SUDO_USER dconf write /org/gnome/desktop/interface/monospace-font-name "'JetBrains Mono 11'"
     echo_ok "GNOME desktop configured." ;
 
+    # /org/cinnamon	# Affects nemo
+    sudo -u $SUDO_USER dconf write /org/cinnamon/desktop/default-applications/terminal/exec "'xfce4-terminal'"
     # /org/nemo/
     sudo -u $SUDO_USER dconf write /org/nemo/icon-view/default-zoom-level "'small'"
     sudo -u $SUDO_USER dconf write /org/nemo/icon-view/labels-beside-icons false
