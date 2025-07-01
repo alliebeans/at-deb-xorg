@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SWAP_WS="$1"
+CURR_WS=$(bspc query -D -d --names)
+
+bspc node @$CURR_WS:/ -s @$SWAP_WS:/ || bspc node @$CURR_WS:/ -d "$SWAP_WS"
+
+bspc desktop -f "$SWAP_WS"
+
+exit 0
+

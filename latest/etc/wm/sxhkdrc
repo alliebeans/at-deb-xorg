@@ -1,15 +1,17 @@
-#! /bin/sh
+#!/bin/bash
 
-# APPLICATIONS
+# GUI APPS
 
 super + t
-	mousepad
+	run mousepad
 
 super + e
-	nemo
+	run nemo
 
 super + w
-	firefox-esr
+	run firefox-esr
+
+# TERMINAL APPS
 
 super + Return
 	xfce4-terminal
@@ -41,14 +43,14 @@ super + q
 
 # Switch workspace
 super + shift + {Left, Right}
-	bspc desktop -f {prev, next} -a
+	bspc desktop -f {prev, next} -a && sync_focus
 
 # Switch to workspace on other monitor
 super + shift + Up
-	switch_monitor_workspace 0
+	switch_monitor_workspace 0 && sync_focus
 
 super + shift + Down
-	switch_monitor_workspace 1
+	switch_monitor_workspace 1 && sync_focus
 
 # Follow node to new workspace
 super + ctrl + shift + {Left, Right}
@@ -66,13 +68,17 @@ alt + shift + {Left,Down,Up,Right}
 super + ctrl + {Left, Up, Down, Right}
 	bspc node -f {west, north, south, east}
 
-# Send the current node in given direction
+# Send current node in given direction
 super + {Left, Up, Down, Right}
 	bspc node -n {west, north, south, east} --follow
 
-# Swap the current node and the node in given direction
+# Swap current node and the node in given direction
 super + alt + {Left, Up, Down, Right}
 	bspc node -s {west, north, south, east} --follow
+
+# Swap current workspace and given workspace
+super + alt + {0-9}
+	swap_workspaces {0-9} && sync_focus
 
 # Flip tree from selected node on given axis
 super + {v,h}
@@ -141,3 +147,6 @@ super + ctrl + shift + m
 
 super + ctrl + shift + u
 	udisksctl unmount --block-device /dev/sdb1 2>&1 | notify_usb_mount
+
+super + ctrl + shift + e
+	udisksctl power-off --block-device /dev/sdb1 2>&1 | notify_usb_mount

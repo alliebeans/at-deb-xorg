@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sleep 0.05
+xdotool windowactivate --sync "$(xdotool getwindowfocus)"
+
+exit 0

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+APP="$1"
+TARGET_DESKTOP=$(bspc query -D -d focused)
+
+for i in {1..25}; do
+	[ "$(bspc query -D -d focused)" = "$TARGET_DESKTOP" ] && break
+	sleep 0.01
+done
+
+exec $APP
+
