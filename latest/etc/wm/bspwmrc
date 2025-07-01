@@ -29,6 +29,9 @@ if ! [ -z $MONITOR_HDMI_XORG ]; then
     xrandr --output $MONITOR_MAIN_XORG --primary --mode 1920x1080 --rotate normal --output $MONITOR_HDMI_XORG --mode 1920x1080 --rotate normal --above $MONITOR_MAIN_XORG
 fi
 
+# Set environment variables
+export PATH="$PATH:/usr/local/libexec:/usr/local/sbin"
+
 # sxhkd
 if ! pgrep -x sxhkd > /dev/null; then
     sxhkd &
