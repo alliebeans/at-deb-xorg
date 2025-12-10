@@ -29,6 +29,7 @@ install_misc-base(){
     $USR_INSTALL --mode=755 $BASE_DIR/etc/$name/.git_prompt.sh /home/$SUDO_USER/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.bashrc /home/$SUDO_USER/
     $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.bash_aliases /home/$SUDO_USER/
+    $USR_INSTALL --mode=644 $BASE_DIR/etc/$name/.inputrc /home/$SUDO_USER/
     timedatectl set-local-rtc 0
     echo "Defaults pwfeedback" | tee /etc/sudoers.d/pwfeedback
 
