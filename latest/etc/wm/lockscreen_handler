@@ -2,34 +2,22 @@
 
 DISABLED=0
 
-while :
-do
-    DISABLE_LOCKSCREEN="$(pactl list | grep -c RUNNING)"
-
-    if [[ $DISABLE_LOCKSCREEN -ne "0" && $DISABLED -eq 0 ]]; then
-        if pgrep -x xss-lock > /dev/null; then
-           kill -15 "$(pidof xss-lock)";
-           xset -dpms;
-           xset s off;
-        fi
-        DISABLED=1
-    else
-        if ! pgrep -x xss-lock > /dev/null; then
-            xss-lock -- /usr/local/bin/lockscreen &
-            xset +dpms;
-            xset s on;
-        fi
-	DISABLED=0
+while sleep 2; do
+  if pactl list | grep -q RUNNING; then
+    if [[ "$DISABLED" -eq 0 ]]; then
+      killall xss-lock
     fi
-
-     echo $DISABLED;
-    echo $DISABLE_LOCKSCREEN;
-    echo ;
-
-
-    if [ $DISABLED -eq 1 ]; then
-	    sleep 30;
+    xset -dpms
+    xset s off
+    DISABLED=1
+  else
+    if [[ "$DISABLED" -eq 1 ]]; then
+      if ! pgrep -x xss-lock > /dev/null; then
+        xss-lock --transfer-sleep-lock -- /usr/local/bin/lockscreen &
+      fi
+      xset +dpms
+      xset s on
+      DISABLED=0
     fi
-
-    sleep 2;
-   done
+  fi
+done

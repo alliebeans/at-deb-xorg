@@ -1,38 +1,37 @@
 #!/bin/bash
 
+BAT_PATH="/sys/class/power_supply/BAT0"
+STATUS_FILE="$BAT_PATH/status"
+CAPACITY_FILE="$BAT_PATH/capacity"
+
 # Notification function
 print_critical() {
-	local low="$1"
-	notify-send -u critical "Connect charger" "Battery is at $low%.";
+    local low="$1"
+    notify-send -u critical "Connect charger" "Battery is at ${low}%."
 }
 
-# Get full energy level
-full=$(cat /sys/class/power_supply/BAT0/energy_full)
-declare -i is_notified=0
+is_notified=0
 
 # Poll every 120 seconds
 while true; do
-	status=$(cat /sys/class/power_supply/BAT0/status)
+    status=$(<"$STATUS_FILE")
 
-	if [ "$status" != "Discharging" ];then
-		is_notified=0;
+    if [[ "$status" != "Discharging" ]]; then
+        is_notified=0
+    else
+        percent=$(<"$CAPACITY_FILE")
 
-	fi
+        if (( is_notified == 1 && percent <= 8 )); then
+            print_critical "$percent"
+        elif (( is_notified == 1 && percent <= 23 )); then
+            print_critical "$percent"
+            sleep 180
+        elif (( is_notified == 0 && percent <= 29 )); then
+            is_notified=1
+            print_critical "$percent"
+            sleep 480
+        fi
+    fi
 
-	if [ "$status" == "Discharging" ];then
-		local now=$(cat /sys/class/power_supply/BAT0/energy_now);
-		local percent=$(calc floor\($now/$full*100\) );
-
-		if [ $is_notified == 1 ] && [ $percent -le "8" ];then
-			print_critical $percent;
-		elif [ $is_notified == 1 ] && [ $percent -le "23" ];then
-			print_critical $percent;
-			sleep 180;
-		elif [ $is_notified == 0 ] && [ $percent -le "29" ];then
-			is_notified=1;
-			print_critical $percent;
-			sleep 480;
-		fi
-	fi
-	sleep 120;
+    sleep 120
 done
